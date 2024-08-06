@@ -9,3 +9,46 @@ th, td {
     padding-left: 1rem;
     padding-right: 1rem;
 }
+
+.updateButton{
+    margin-right: 10px;
+    font-family: cursive;
+    font-weight: bold;
+}
+
+.deleteButton{
+    font-family: cursive;
+    font-weight: bold;
+}
+
+.inputField{
+    border-radius: 15px;
+    font-family: cursive;
+    padding: 10px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.showUsers{
+    margin-top: 13px;
+    padding: 10px;
+    font-weight: bold;
+    margin-left: 10px;
+    font-family: cursive;
+}
+
+.downloadJSON{
+    margin-top: 13px;
+    padding: 10px;
+    font-weight: bold;
+    margin-left: 10px;
+    font-family: cursive;
+}
+
+.inputSetUser{
+    margin-bottom: 10px;
+}
+
+.activeUsers{
+    margin-top: 10px;
+}

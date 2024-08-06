@@ -112,8 +112,8 @@ export default function App() {
                             <td>{user.name}</td>
                             <td>{user.email}</td>
                             <td>
-                                <Button style={{ marginRight: 10, fontFamily: 'cursive', fontWeight: 'bold' }} onClick={() => showModal(user)}>Update</Button>
-                                <Button style={{ fontFamily: 'cursive', fontWeight: 'bold' }} onClick={() => handleDelete(user.id)} danger>Delete</Button>
+                                <Button className="updateButton" onClick={() => showModal(user)}>Update</Button>
+                                <Button className="deleteButton" onClick={() => handleDelete(user.id)} danger>Delete</Button>
                             </td>
                         </tr>
                     )}
@@ -128,16 +128,16 @@ export default function App() {
                 value={userFinder}
                 onChange={handleInput}
                 type="number"
-                style={{ borderRadius: 15, fontFamily: 'cursive', padding: 10, fontWeight: 'bold', marginLeft: 10 }}
+                className="inputField"
                 placeholder='Find by ID'
             />
             <Button
                 onClick={showUsers}
-                style={{ marginTop: 13, padding: 10, fontWeight: 'bold', marginLeft: 10, fontFamily: 'cursive' }}
+                className="showUsers"
             >
                 Show all users
             </Button>
-            <Button style={{ marginTop: 13, padding: 10, fontWeight: 'bold', marginLeft: 10, fontFamily: 'cursive' }} onClick={downloadJSON}>Download .json</Button>
+            <Button className="downloadJSON" onClick={downloadJSON}>Download .json</Button>
             <p>This component demonstrates fetching data from the server.</p>
             {contents}
             <Modal
@@ -149,7 +149,7 @@ export default function App() {
                 {isUpdateModal ? (
                     <div>
                         <Input
-                            style={{ marginBottom: 10 }}
+                            className="inputSetUser"
                             name="name"
                             value={selectedUser?.name || ''}
                             onChange={handleInputChange}
@@ -169,7 +169,7 @@ export default function App() {
                         <p>Email: {selectedUser?.email}</p>
                     </div>
                 )}
-                <div style={{ marginTop: 10 }}>
+                <div className="activeUsers">
                     <Checkbox checked={isUserActive} onChange={handleUserActivityChange} />
                     <label> User <strong>{selectedUser?.name}</strong> is {isUserActive ? 'active' : 'inactive'} </label>
                 </div>
