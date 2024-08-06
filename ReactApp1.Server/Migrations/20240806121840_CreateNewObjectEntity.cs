@@ -32,7 +32,7 @@ namespace ReactApp1.Server.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
         }
-
+         
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
