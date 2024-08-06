@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-import { Modal, Button, Input, Checkbox } from 'antd';
+import { Modal, Button, Input, Checkbox, notification } from 'antd';
 
 export default function App() {
     const [users, setUsers] = useState([]);
@@ -17,16 +17,21 @@ export default function App() {
 
     const showUsers = async () => {
         setLoading(true);
-        const response = await fetch('user');
-        const data = await response.json();
-        setUsers(data);
-        setLoading(false);
-        setUserFinder('');
+        try {
+            const response = await fetch('user');
+            const data = await response.json();
+            setUsers(data);
+        } catch (error) {
+            notification.error({ message: 'Error fetching users', description: error.message });
+        } finally {
+            setLoading(false);
+            setUserFinder('');
+        }
     };
 
     const handleInput = (e) => {
         setUserFinder(e.target.value);
-    }
+    };
 
     const showModal = (user = null) => {
         setSelectedUser(user);
@@ -37,35 +42,55 @@ export default function App() {
 
     const hideModal = () => {
         setIsModalOpen(false);
+        setSelectedUser(null);
     };
 
     const handleOk = async () => {
-        if (isUpdateModal && selectedUser) {
-            await fetch(`user/${selectedUser.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...selectedUser, isActive: isUserActive }),
-            });
-            showUsers();
+        try {
+            if (isUpdateModal && selectedUser) {
+                await fetch(`user/${selectedUser.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ...selectedUser, isActive: isUserActive }),
+                });
+                notification.success({ message: 'User updated successfully' });
+            } else {
+                const newUser = { ...selectedUser, isActive: isUserActive };
+                await fetch('user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newUser),
+                });
+                notification.success({ message: 'User created successfully' });
+            }
+            await showUsers();
+        } catch (error) {
+            notification.error({ message: 'Error saving user', description: error.message });
+        } finally {
+            hideModal();
         }
-        setIsModalOpen(false);
     };
 
     const handleCancel = () => {
-        setIsModalOpen(false);
+        hideModal();
     };
 
     const handleDelete = (userId) => {
         setSelectedUser(userId);
         Modal.confirm({
-            title: `Are you sure want to delete this user?`,
+            title: 'Are you sure want to delete this user?',
             okText: 'Yes',
             cancelText: 'No',
             onOk: async () => {
-                await fetch(`user/${userId}`, {
-                    method: 'DELETE',
-                });
-                showUsers();
+                try {
+                    await fetch(`user/${userId}`, {
+                        method: 'DELETE',
+                    });
+                    notification.success({ message: 'User deleted successfully' });
+                    await showUsers();
+                } catch (error) {
+                    notification.error({ message: 'Error deleting user', description: error.message });
+                }
             },
         });
     };
@@ -82,11 +107,11 @@ export default function App() {
         link.download = 'users.json';
         link.click();
         URL.revokeObjectURL(url);
-    }
+    };
 
     const handleUserActivityChange = (e) => {
         setIsUserActive(e.target.checked);
-    }
+    };
 
     const filteredUsers = userFinder
         ? users.filter(user => user.id === parseInt(userFinder, 10))
@@ -131,44 +156,31 @@ export default function App() {
                 className="inputField"
                 placeholder='Find by ID'
             />
-            <Button
-                onClick={showUsers}
-                className="showUsers"
-            >
-                Show all users
-            </Button>
+            <Button onClick={showUsers} className="showUsers">Show all users</Button>
+            <Button onClick={() => showModal()} className="createUser">Create New User</Button>
             <Button className="downloadJSON" onClick={downloadJSON}>Download .json</Button>
             <p>This component demonstrates fetching data from the server.</p>
             {contents}
             <Modal
-                title={isUpdateModal ? "Update User" : "User Details"}
+                title={isUpdateModal ? "Update User" : "Create User"}
                 visible={isModalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
+                afterClose={() => setSelectedUser(null)}
             >
-                {isUpdateModal ? (
-                    <div>
-                        <Input
-                            className="inputSetUser"
-                            name="name"
-                            value={selectedUser?.name || ''}
-                            onChange={handleInputChange}
-                            placeholder="Name"
-                        />
-                        <Input
-                            name="email"
-                            value={selectedUser?.email || ''}
-                            onChange={handleInputChange}
-                            placeholder="Email"
-                        />
-                    </div>
-                ) : (
-                    <div>
-                        <p>Id: {selectedUser?.id}</p>
-                        <p>Name: {selectedUser?.name}</p>
-                        <p>Email: {selectedUser?.email}</p>
-                    </div>
-                )}
+                <Input
+                    className="inputSetUser"
+                    name="name"
+                    value={selectedUser?.name || ''}
+                    onChange={handleInputChange}
+                    placeholder="Name"
+                />
+                <Input
+                    name="email"
+                    value={selectedUser?.email || ''}
+                    onChange={handleInputChange}
+                    placeholder="Email"
+                />
                 <div className="activeUsers">
                     <Checkbox checked={isUserActive} onChange={handleUserActivityChange} />
                     <label> User <strong>{selectedUser?.name}</strong> is {isUserActive ? 'active' : 'inactive'} </label>
