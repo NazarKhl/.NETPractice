@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using ReactApp1.Server.Data;
 
 namespace ReactApp1.Server
 {
@@ -8,9 +10,10 @@ namespace ReactApp1.Server
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddDbContext<UserDBContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("local")));
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -27,13 +30,16 @@ namespace ReactApp1.Server
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.MapFallbackToFile("/index.html");
+
+            // Apply pending migrations
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<UserDBContext>();
+                dbContext.Database.Migrate();
+            }
 
             app.Run();
         }
