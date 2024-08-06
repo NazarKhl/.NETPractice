@@ -52,3 +52,9 @@ th, td {
 .activeUsers{
     margin-top: 10px;
 }
+
+.createUser{
+    margin-left: 10px;
+    font-family: cursive;
+    font-weight: bold;
+}
