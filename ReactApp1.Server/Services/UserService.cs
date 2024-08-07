@@ -1,6 +1,5 @@
 ﻿using ReactApp1.Server.DTOs;
 using ReactApp1.Server.Models;
-using ReactApp1.Server.Data;
 using ReactApp1.Server.Interface;
 using System.Collections.Generic;
 using System.Linq;

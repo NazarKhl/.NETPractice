@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ReactApp1.Server.Data;
+using ReactApp1.Server.Interface;
 
 namespace ReactApp1.Server.Data
 {

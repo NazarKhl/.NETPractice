@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import { Modal, Button, Input, Checkbox, notification, DatePicker, Select } from 'antd';
 import moment from 'moment';
+import UserChart from './Charts/UserChart';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -186,6 +187,7 @@ export default function App() {
             <Button className="downloadJSON" onClick={downloadJSON}>Download .json</Button>
             <p>This component demonstrates fetching data from the server.</p>
             {contents}
+            <UserChart users={users} />
             <Modal
                 title={isUpdateModal ? "Update User" : "Create User"}
                 visible={isModalOpen}
@@ -234,4 +236,5 @@ export default function App() {
             </Modal>
         </div>
     );
+
 }
