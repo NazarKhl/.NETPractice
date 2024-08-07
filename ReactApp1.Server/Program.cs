@@ -15,6 +15,8 @@ namespace ReactApp1.Server
             builder.Services.AddDbContext<UserDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("local")));
 
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(EntityFrameworkRepository<>));
+
             builder.Services.AddScoped<IUserService, UserService>();
 
             builder.Services.AddControllers();

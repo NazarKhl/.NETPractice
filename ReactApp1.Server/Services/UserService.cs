@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ReactApp1.Server.Data;
+﻿using ReactApp1.Server.DTOs;
 using ReactApp1.Server.Models;
-using ReactApp1.Server.DTOs;
+using ReactApp1.Server.Data;
 using ReactApp1.Server.Interface;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +9,18 @@ namespace ReactApp1.Service
 {
     public class UserService : IUserService
     {
-        private readonly UserDBContext _context;
+        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Absence> _absenceRepository;
 
-        public UserService(UserDBContext context)
+        public UserService(IRepository<User> userRepository, IRepository<Absence> absenceRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
+            _absenceRepository = absenceRepository;
         }
 
         public List<UserDTO> GetAll()
         {
-            return _context.Users
-                .Include(u => u.Absences)
+            return _userRepository.GetAll()
                 .Select(u => new UserDTO
                 {
                     Id = u.Id,
@@ -41,10 +41,7 @@ namespace ReactApp1.Service
 
         public UserDTO? Get(int id)
         {
-            var user = _context.Users
-                .Include(u => u.Absences)
-                .FirstOrDefault(u => u.Id == id);
-
+            var user = _userRepository.GetById(id);
             if (user == null) return null;
 
             return new UserDTO
@@ -80,31 +77,26 @@ namespace ReactApp1.Service
                 }).ToList()
             };
 
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            _userRepository.Add(user);
         }
 
         public void Delete(int id)
         {
-            var user = _context.Users.Include(u => u.Absences).FirstOrDefault(u => u.Id == id);
+            var user = _userRepository.GetById(id);
             if (user != null)
             {
-                _context.Absences.RemoveRange(user.Absences);
-                _context.Users.Remove(user);
-                _context.SaveChanges();
+                _userRepository.Delete(user);
             }
         }
 
         public void Update(UserDTO userDTO)
         {
-            var user = _context.Users.Include(u => u.Absences).FirstOrDefault(u => u.Id == userDTO.Id);
+            var user = _userRepository.GetById(userDTO.Id);
             if (user != null)
             {
                 user.Name = userDTO.Name;
                 user.Email = userDTO.Email;
                 user.isActive = userDTO.isActive;
-
-                _context.Absences.RemoveRange(user.Absences);
 
                 user.Absences = userDTO.Absences.Select(a => new Absence
                 {
@@ -114,15 +106,13 @@ namespace ReactApp1.Service
                     DateTo = a.DateTo ?? default
                 }).ToList();
 
-                _context.Users.Update(user);
-                _context.SaveChanges();
+                _userRepository.Update(user);
             }
         }
 
         public List<UserDTO> GetActiveUsers()
         {
-            return _context.Users
-                .Include(u => u.Absences)
+            return _userRepository.GetAll()
                 .Where(u => u.isActive)
                 .Select(u => new UserDTO
                 {
@@ -144,8 +134,7 @@ namespace ReactApp1.Service
 
         public List<UserDTO> GetInactiveUsers()
         {
-            return _context.Users
-                .Include(u => u.Absences)
+            return _userRepository.GetAll()
                 .Where(u => !u.isActive)
                 .Select(u => new UserDTO
                 {
