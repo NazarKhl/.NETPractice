@@ -224,8 +224,8 @@ export default function App() {
                         />
                         <RangePicker
                             value={absence.dateFrom && absence.dateTo ? [moment(absence.dateFrom), moment(absence.dateTo)] : null}
-                            onChange={(dates) => handleAbsenceChange(index, 'dateFrom', dates ? dates[0].toISOString() : null)}
-                            onCalendarChange={(dates) => handleAbsenceChange(index, 'dateTo', dates ? dates[1].toISOString() : null)}
+                            onChange={(dates) => handleAbsenceChange(index, 'dateFrom', dates ? dates[0].toString() : null)}
+                            onCalendarChange={(dates) => handleAbsenceChange(index, 'dateTo', dates ? dates[1].toString() : null)}
                         />
                         <Button onClick={() => removeAbsence(index)}>Remove</Button>
                     </div>

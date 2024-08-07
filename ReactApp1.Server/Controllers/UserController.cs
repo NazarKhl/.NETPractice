@@ -1,92 +1,65 @@
 using Microsoft.AspNetCore.Mvc;
-using ReactApp1.Server.Models;
-using ReactApp1.Server.Services;
-using System.Collections.Generic;
+using ReactApp1.Server.DTOs;
+using ReactApp1.Server.Interface;
 
-namespace ReactApp1.Server.Controllers
+[ApiController]
+[Route("[controller]")]
+public class UserController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class UserController : ControllerBase
+    private readonly IUserService _userService;
+
+    public UserController(IUserService userService)
     {
-        private readonly IUserService _userService;
-        private readonly ILogger<UserController> _logger;
+        _userService = userService;
+    }
 
-        public UserController(IUserService userService, ILogger<UserController> logger)
-        {
-            _userService = userService;
-            _logger = logger;
-        }
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var users = _userService.GetAll();
+        return Ok(users);
+    }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<User>> GetUsers()
-        {
-            return Ok(_userService.GetAll());
-        }
+    [HttpGet("{id}")]
+    public IActionResult Get(int id)
+    {
+        var user = _userService.Get(id);
+        if (user == null) return NotFound();
+        return Ok(user);
+    }
 
-        [HttpGet("{id}")]
-        public ActionResult<User> GetUser(int id)
-        {
-            var user = _userService.Get(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(user);
-            }
-        }
+    [HttpPost]
+    public IActionResult Post([FromBody] UserDTO userDTO)
+    {
+        _userService.Add(userDTO);
+        return CreatedAtAction(nameof(Get), new { id = userDTO.Id }, userDTO);
+    }
 
-        [HttpGet("active")]
-        public ActionResult<IEnumerable<User>> GetActiveUsers()
-        {
-            var activeUsers = _userService.GetActiveUsers();
-            return Ok(activeUsers);
-        }
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        _userService.Delete(id);
+        return NoContent();
+    }
 
-        [HttpGet("inactive")]
-        public ActionResult<IEnumerable<User>> GetInactiveUsers()
-        {
-            var inactiveUsers = _userService.GetInactiveUsers();
-            return Ok(inactiveUsers);
-        }
+    [HttpPut("{id}")]
+    public IActionResult Put([FromBody] UserDTO userDTO)
+    {
+        _userService.Update(userDTO);
+        return NoContent();
+    }
 
-        [HttpPost]
-        public ActionResult<User> CreateUser(User user)
-        {
-            _userService.Add(user);
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
-        }
+    [HttpGet("active")]
+    public IActionResult GetActiveUsers()
+    {
+        var users = _userService.GetActiveUsers();
+        return Ok(users);
+    }
 
-        [HttpPut("{id}")]
-        public ActionResult UpdateUser(int id, User updatedUser)
-        {
-            var existingUser = _userService.Get(id);
-            if (existingUser == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                _userService.Update(updatedUser);
-                return NoContent();
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public ActionResult DeleteUser(int id)
-        {
-            var user = _userService.Get(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                _userService.Delete(id);
-                return NoContent();
-            }
-        }
+    [HttpGet("inactive")]
+    public IActionResult GetInactiveUsers()
+    {
+        var users = _userService.GetInactiveUsers();
+        return Ok(users);
     }
 }
