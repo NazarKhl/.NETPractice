@@ -17,13 +17,9 @@ export default function App() {
 
     const showUsers = async () => {
         setLoading(true);
-        try {
             const response = await fetch('user');
             const data = await response.json();
             setUsers(data);
-        } catch (error) {
-            notification.error({ message: 'Error fetching users', description: error.message });
-        } finally {
             setLoading(false);
             setUserFinder('');
         }
@@ -46,7 +42,6 @@ export default function App() {
     };
 
     const handleOk = async () => {
-        try {
             if (isUpdateModal && selectedUser) {
                 await fetch(`user/${selectedUser.id}`, {
                     method: 'PUT',
@@ -61,14 +56,9 @@ export default function App() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(newUser),
                 });
-                notification.success({ message: 'User created successfully' });
             }
             await showUsers();
-        } catch (error) {
-            notification.error({ message: 'Error saving user', description: error.message });
-        } finally {
             hideModal();
-        }
     };
 
     const handleCancel = () => {
