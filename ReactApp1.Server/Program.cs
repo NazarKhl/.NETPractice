@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Data;
+using ReactApp1.Server.Services;
 
 namespace ReactApp1.Server
 {
@@ -12,6 +13,8 @@ namespace ReactApp1.Server
             // Add services to the container.
             builder.Services.AddDbContext<UserDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("local")));
+
+            builder.Services.AddScoped<IUserService, UserService>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();

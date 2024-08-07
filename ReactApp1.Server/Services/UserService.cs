@@ -1,54 +1,70 @@
-﻿using ReactApp1.Server.Models;
-using System.Xml.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using ReactApp1.Server.Data;
+using ReactApp1.Server.Models;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace ReactTestApp.Server.Services
+namespace ReactApp1.Server.Services
 {
-    public static class UserService
+    public interface IUserService
     {
-        static List<User> Users { get; }
+        List<User> GetAll();
+        User? Get(int id);
+        void Add(User user);
+        void Delete(int id);
+        void Update(User user);
+        List<User> GetActiveUsers();
+        List<User> GetInactiveUsers();
+    }
 
+    public class UserService : IUserService
+    {
+        private readonly UserDBContext _context;
 
-        static UserService()
+        public UserService(UserDBContext context)
         {
-            Users = new List<User>
-            {
-                new User { Id = 1, Name = "Name1", Email = "abc@ex.ex", isActive = true},
-                new User { Id = 2, Name = "Name2", Email = "abc@ex.ex", isActive = false},
-                new User { Id = 3, Name = "Name3", Email = "abc@ex.ex", isActive = true},
-                new User { Id = 4, Name = "Name4", Email = "abc@ex.ex", isActive = true},
-                new User { Id = 5, Name = "Name5", Email = "abc@ex.ex", isActive = false}
-            };
+            _context = context;
         }
 
-        public static List<User> GetAll() => Users;
-
-        public static User? Get(int id) => Users.FirstOrDefault(u => u.Id == id);
-
-        public static void Add(User user)
+        public List<User> GetAll()
         {
-            user.Id = Users.Count > 0 ? Users.Max(u => u.Id) + 1 : 1;
-            Users.Add(user);
+            return _context.Users.Include(u => u.Absences).ToList();
         }
-        public static void Delete(int id)
+
+        public User? Get(int id)
+        {
+            return _context.Users.Include(u => u.Absences).FirstOrDefault(u => u.Id == id);
+        }
+
+        public void Add(User user)
+        {
+            _context.Users.Add(user);
+            _context.SaveChanges();
+        }
+
+        public void Delete(int id)
         {
             var user = Get(id);
-            if (user is null)
-                return;
+            if (user is null) return;
 
-            Users.Remove(user);
+            _context.Users.Remove(user);
+            _context.SaveChanges();
         }
 
-        public static void Update(User user)
+        public void Update(User user)
         {
-            var index = Users.FindIndex(u => u.Id == user.Id);
-            if (index == -1)
-                return;
-
-            Users[index] = user;
+            _context.Users.Update(user);
+            _context.SaveChanges();
         }
 
-        public static List<User> GetActiveUsers() => Users.Where(u => u.isActive).ToList();
+        public List<User> GetActiveUsers()
+        {
+            return _context.Users.Include(u => u.Absences).Where(u => u.isActive).ToList();
+        }
 
-        public static List<User> GetInactiveUsers() => Users.Where(u => !u.isActive).ToList();
+        public List<User> GetInactiveUsers()
+        {
+            return _context.Users.Include(u => u.Absences).Where(u => !u.isActive).ToList();
+        }
     }
 }

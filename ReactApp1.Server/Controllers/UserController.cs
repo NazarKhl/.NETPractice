@@ -1,31 +1,33 @@
 using Microsoft.AspNetCore.Mvc;
 using ReactApp1.Server.Models;
-using ReactTestApp.Server.Services;
+using ReactApp1.Server.Services;
 using System.Collections.Generic;
 
-namespace ReactTestApp.Server.Controllers
+namespace ReactApp1.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
+        private readonly IUserService _userService;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(ILogger<UserController> logger)
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
+            _userService = userService;
             _logger = logger;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<User>> GetUsers()
         {
-            return UserService.GetAll();
+            return Ok(_userService.GetAll());
         }
 
         [HttpGet("{id}")]
         public ActionResult<User> GetUser(int id)
         {
-            var user = UserService.Get(id);
+            var user = _userService.Get(id);
             if (user == null)
             {
                 return NotFound();
@@ -39,35 +41,35 @@ namespace ReactTestApp.Server.Controllers
         [HttpGet("active")]
         public ActionResult<IEnumerable<User>> GetActiveUsers()
         {
-            var activeUsers = UserService.GetActiveUsers();
+            var activeUsers = _userService.GetActiveUsers();
             return Ok(activeUsers);
         }
 
         [HttpGet("inactive")]
         public ActionResult<IEnumerable<User>> GetInactiveUsers()
         {
-            var inactiveUsers = UserService.GetInactiveUsers();
+            var inactiveUsers = _userService.GetInactiveUsers();
             return Ok(inactiveUsers);
         }
 
         [HttpPost]
         public ActionResult<User> CreateUser(User user)
         {
-            UserService.Add(user);
+            _userService.Add(user);
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
         }
 
         [HttpPut("{id}")]
         public ActionResult UpdateUser(int id, User updatedUser)
         {
-            var existingUser = UserService.Get(id);
+            var existingUser = _userService.Get(id);
             if (existingUser == null)
             {
                 return NotFound();
             }
             else
             {
-                UserService.Update(updatedUser);
+                _userService.Update(updatedUser);
                 return NoContent();
             }
         }
@@ -75,14 +77,14 @@ namespace ReactTestApp.Server.Controllers
         [HttpDelete("{id}")]
         public ActionResult DeleteUser(int id)
         {
-            var user = UserService.Get(id);
+            var user = _userService.Get(id);
             if (user == null)
             {
                 return NotFound();
             }
             else
             {
-                UserService.Delete(id);
+                _userService.Delete(id);
                 return NoContent();
             }
         }

@@ -8,4 +8,5 @@ namespace ReactApp1.Server.Models
         public bool isActive { get; set; }
         public List<Absence> Absences { get; set; }
     }
+
 }

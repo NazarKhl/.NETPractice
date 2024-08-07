@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-import { Modal, Button, Input, Checkbox, notification } from 'antd';
+import { Modal, Button, Input, Checkbox, notification, DatePicker, Select } from 'antd';
+import moment from 'moment';
+
+const { RangePicker } = DatePicker;
+const { Option } = Select;
 
 export default function App() {
     const [users, setUsers] = useState([]);
@@ -17,9 +21,13 @@ export default function App() {
 
     const showUsers = async () => {
         setLoading(true);
-            const response = await fetch('user');
+        try {
+            const response = await fetch('/user');
             const data = await response.json();
             setUsers(data);
+        } catch (error) {
+            notification.error({ message: 'Error fetching users', description: error.message });
+        } finally {
             setLoading(false);
             setUserFinder('');
         }
@@ -30,7 +38,7 @@ export default function App() {
     };
 
     const showModal = (user = null) => {
-        setSelectedUser(user);
+        setSelectedUser(user || { name: '', email: '', isActive: false, absences: [] });
         setIsModalOpen(true);
         setIsUpdateModal(!!user);
         setIsUserActive(user?.isActive || false);
@@ -42,23 +50,29 @@ export default function App() {
     };
 
     const handleOk = async () => {
+        try {
+            const payload = { ...selectedUser, isActive: isUserActive };
+
             if (isUpdateModal && selectedUser) {
-                await fetch(`user/${selectedUser.id}`, {
+                await fetch(`/user/${selectedUser.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...selectedUser, isActive: isUserActive }),
+                    body: JSON.stringify(payload),
                 });
                 notification.success({ message: 'User updated successfully' });
             } else {
-                const newUser = { ...selectedUser, isActive: isUserActive };
-                await fetch('user', {
+                await fetch('/user', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newUser),
+                    body: JSON.stringify(payload),
                 });
+                notification.success({ message: 'User created successfully' });
             }
             await showUsers();
             hideModal();
+        } catch (error) {
+            notification.error({ message: 'Error saving user', description: error.message });
+        }
     };
 
     const handleCancel = () => {
@@ -66,14 +80,13 @@ export default function App() {
     };
 
     const handleDelete = (userId) => {
-        setSelectedUser(userId);
         Modal.confirm({
-            title: 'Are you sure want to delete this user?',
+            title: 'Are you sure you want to delete this user?',
             okText: 'Yes',
             cancelText: 'No',
             onOk: async () => {
                 try {
-                    await fetch(`user/${userId}`, {
+                    await fetch(`/user/${userId}`, {
                         method: 'DELETE',
                     });
                     notification.success({ message: 'User deleted successfully' });
@@ -87,6 +100,28 @@ export default function App() {
 
     const handleInputChange = (e) => {
         setSelectedUser(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+
+    const handleAbsenceChange = (index, field, value) => {
+        setSelectedUser(prev => {
+            const absences = prev.absences ? [...prev.absences] : [];
+            absences[index] = { ...absences[index], [field]: value };
+            return { ...prev, absences };
+        });
+    };
+
+    const addAbsence = () => {
+        setSelectedUser(prev => ({
+            ...prev,
+            absences: prev.absences ? [...prev.absences, { type: 'Illnes', description: '', dateFrom: null, dateTo: null }] : [{ type: 'Illnes', description: '', dateFrom: null, dateTo: null }],
+        }));
+    };
+
+    const removeAbsence = (index) => {
+        setSelectedUser(prev => {
+            const absences = prev.absences ? prev.absences.filter((_, i) => i !== index) : [];
+            return { ...prev, absences };
+        });
     };
 
     const downloadJSON = () => {
@@ -110,7 +145,7 @@ export default function App() {
     const contents = loading
         ? <p><em>Loading... Please wait.</em></p>
         : filteredUsers.length === 0
-            ? <p><em>No users found. Click "Show user" to fetch data.</em></p>
+            ? <p><em>No users found. Click "Show all users" to fetch data.</em></p>
             : <table className="table table-striped" aria-labelledby="tableLabel">
                 <thead>
                     <tr>
@@ -175,6 +210,27 @@ export default function App() {
                     <Checkbox checked={isUserActive} onChange={handleUserActivityChange} />
                     <label> User <strong>{selectedUser?.name}</strong> is {isUserActive ? 'active' : 'inactive'} </label>
                 </div>
+                {selectedUser?.absences?.map((absence, index) => (
+                    <div key={index} className="absenceField">
+                        <Select value={absence.type} onChange={(value) => handleAbsenceChange(index, 'type', value)} style={{ width: 120 }}>
+                            <Option value="Illnes">Illness</Option>
+                            <Option value="Vacations">Vacations</Option>
+                            <Option value="Other">Other</Option>
+                        </Select>
+                        <Input
+                            value={absence.description}
+                            onChange={(e) => handleAbsenceChange(index, 'description', e.target.value)}
+                            placeholder="Description"
+                        />
+                        <RangePicker
+                            value={absence.dateFrom && absence.dateTo ? [moment(absence.dateFrom), moment(absence.dateTo)] : null}
+                            onChange={(dates) => handleAbsenceChange(index, 'dateFrom', dates ? dates[0].toISOString() : null)}
+                            onCalendarChange={(dates) => handleAbsenceChange(index, 'dateTo', dates ? dates[1].toISOString() : null)}
+                        />
+                        <Button onClick={() => removeAbsence(index)}>Remove</Button>
+                    </div>
+                ))}
+                <Button onClick={addAbsence}>Add Absence</Button>
             </Modal>
         </div>
     );
