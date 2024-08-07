@@ -212,12 +212,12 @@ export default function App() {
                 </div>
                 {selectedUser?.absences?.map((absence, index) => (
                     <div key={index} className="absenceField">
-                        <Select value={absence.type} onChange={(value) => handleAbsenceChange(index, 'type', value)} style={{ width: 120 }}>
+                        <Select className='selectValue' value={absence.type} onChange={(value) => handleAbsenceChange(index, 'type', value)} style={{ width: 120 }}>
                             <Option value="Illnes">Illness</Option>
                             <Option value="Vacations">Vacations</Option>
                             <Option value="Other">Other</Option>
                         </Select>
-                        <Input
+                        <Input className='inputAbsField'
                             value={absence.description}
                             onChange={(e) => handleAbsenceChange(index, 'description', e.target.value)}
                             placeholder="Description"

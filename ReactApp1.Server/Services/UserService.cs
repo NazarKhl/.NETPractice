@@ -38,22 +38,49 @@ namespace ReactApp1.Server.Services
 
         public void Add(User user)
         {
-            _context.Users.Add(user);
+            var existingUser = _context.Users.Local.FirstOrDefault(u => u.Id == user.Id);
+            if (existingUser != null)
+            {
+                _context.Entry(existingUser).CurrentValues.SetValues(user);
+            }
+            else
+            {
+                _context.Users.Add(user);
+            }
             _context.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            var user = Get(id);
-            if (user is null) return;
+            var existingUser = _context.Users.Local.FirstOrDefault(u => u.Id == id);
 
-            _context.Users.Remove(user);
+            if (existingUser != null)
+            {
+                _context.Users.Remove(existingUser);
+            }
+            else
+            {
+                var user = _context.Users.Find(id);
+
+                if (user != null)
+                {
+                    _context.Users.Remove(user);
+                }
+            }
             _context.SaveChanges();
         }
 
         public void Update(User user)
         {
-            _context.Users.Update(user);
+            var existingUser = _context.Users.Local.FirstOrDefault(u => u.Id == user.Id);
+            if (existingUser != null)
+            {
+                _context.Entry(existingUser).CurrentValues.SetValues(user);
+            }
+            else
+            {
+                _context.Users.Update(user);
+            }
             _context.SaveChanges();
         }
 

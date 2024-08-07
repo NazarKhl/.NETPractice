@@ -6,7 +6,7 @@ namespace ReactApp1.Server.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public bool isActive { get; set; }
-        public List<Absence> Absences { get; set; }
+        public List<Absence> Absences { get; set; } = new List<Absence>();
     }
 
 }
