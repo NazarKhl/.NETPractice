@@ -3,4 +3,7 @@
 GET {{ReactApp1.Server_HostAddress}}/user/
 Accept: application/json
 
+GET {{ReactApp1.Server_HostAddress}}/absence/
+Accept: application/json
+
 ###

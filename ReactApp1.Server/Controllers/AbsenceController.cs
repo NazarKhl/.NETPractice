@@ -5,7 +5,7 @@ using ReactApp1.Server.Interface;
 namespace ReactApp1.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AbsenceController : ControllerBase
     {
         private readonly IAbsenceService _absenceService;
@@ -26,14 +26,17 @@ namespace ReactApp1.Server.Controllers
         [HttpPost]
         public IActionResult Add([FromBody] AbsenceDTO absenceDTO)
         {
-            if (absenceDTO == null || absenceDTO.UserId <= 0)
+            if (absenceDTO == null || absenceDTO.UserId <= 0 || !Enum.TryParse<AbsenceDTO.AbsenceType>(absenceDTO.Type.ToString(), out var type))
             {
                 return BadRequest("Invalid absence data.");
             }
 
+            absenceDTO.Type = type;
             _absenceService.AddAbsence(absenceDTO.UserId, absenceDTO);
             return CreatedAtAction(nameof(Get), new { id = absenceDTO.Id }, absenceDTO);
         }
+
+
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
