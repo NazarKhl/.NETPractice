@@ -112,10 +112,6 @@ export default function App() {
     };
 
     const addAbsence = () => {
-        setSelectedUser(prev => ({
-            ...prev,
-            absences: prev.absences ? [...prev.absences, { type: 'Illnes', description: '', dateFrom: null, dateTo: null }] : [{ type: 'Illnes', description: '', dateFrom: null, dateTo: null }],
-        }));
     };
 
     const removeAbsence = (index) => {
@@ -153,7 +149,7 @@ export default function App() {
                         <th>Id</th>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>Action</th>
+                        <th>Action buttons</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -163,6 +159,7 @@ export default function App() {
                             <td>{user.name}</td>
                             <td>{user.email}</td>
                             <td>
+                                <Button className="addAbsenceButton" oncClick={addAbsence}>Add Absence</Button>
                                 <Button className="updateButton" onClick={() => showModal(user)}>Update</Button>
                                 <Button className="deleteButton" onClick={() => handleDelete(user.id)} danger>Delete</Button>
                             </td>
@@ -212,27 +209,7 @@ export default function App() {
                     <Checkbox checked={isUserActive} onChange={handleUserActivityChange} />
                     <label> User <strong>{selectedUser?.name}</strong> is {isUserActive ? 'active' : 'inactive'} </label>
                 </div>
-                {selectedUser?.absences?.map((absence, index) => (
-                    <div key={index} className="absenceField">
-                        <Select className='selectValue' value={absence.type} onChange={(value) => handleAbsenceChange(index, 'type', value)} style={{ width: 120 }}>
-                            <Option value="Illnes">Illness</Option>
-                            <Option value="Vacations">Vacations</Option>
-                            <Option value="Other">Other</Option>
-                        </Select>
-                        <Input className='inputAbsField'
-                            value={absence.description}
-                            onChange={(e) => handleAbsenceChange(index, 'description', e.target.value)}
-                            placeholder="Description"
-                        />
-                        <RangePicker
-                            value={absence.dateFrom && absence.dateTo ? [moment(absence.dateFrom), moment(absence.dateTo)] : null}
-                            onChange={(dates) => handleAbsenceChange(index, 'dateFrom', dates ? dates[0].toString() : null)}
-                            onCalendarChange={(dates) => handleAbsenceChange(index, 'dateTo', dates ? dates[1].toString() : null)}
-                        />
-                        <Button onClick={() => removeAbsence(index)}>Remove</Button>
-                    </div>
-                ))}
-                <Button onClick={addAbsence}>Add Absence</Button>
+               
             </Modal>
         </div>
     );

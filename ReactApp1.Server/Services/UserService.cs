@@ -3,6 +3,7 @@ using ReactApp1.Server.Models;
 using ReactApp1.Server.Interface;
 using System.Collections.Generic;
 using System.Linq;
+using static ReactApp1.Server.Models.Absence;
 
 namespace ReactApp1.Service
 {
@@ -151,6 +152,32 @@ namespace ReactApp1.Service
                     }).ToList()
                 })
                 .ToList();
+        }
+
+        public void AddAbsence(int userId, AbsenceDTO absenceDTO)
+        {
+            var user = _userRepository.GetById(userId);
+            if (user != null)
+            {
+                var absence = new Absence
+                {
+                    Type = (AbsenceType)absenceDTO.Type,
+                    Description = absenceDTO.Description,
+                    DateFrom = absenceDTO.DateFrom ?? default,
+                    DateTo = absenceDTO.DateTo ?? default
+                };
+
+                user.Absences.Add(absence);
+                _userRepository.Update(user);
+            }
+        }
+        public void DeleteAbsence(int absenceId)
+        {
+            var absence = _absenceRepository.GetById(absenceId);
+            if (absence != null)
+            {
+                _absenceRepository.Delete(absence);
+            }
         }
     }
 }

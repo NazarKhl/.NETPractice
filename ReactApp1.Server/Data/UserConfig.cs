@@ -11,9 +11,9 @@ namespace ReactApp1.Server.Data
             builder.HasKey(u => u.Id);
 
             builder.HasMany(u => u.Absences)
-            .WithOne()
-            .HasForeignKey(a => a.Id)
-            .OnDelete(DeleteBehavior.Restrict);
+                .WithOne(i => i.User)
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

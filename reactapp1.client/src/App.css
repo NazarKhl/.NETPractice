@@ -67,3 +67,9 @@ th, td {
 .inputAbsField {
     margin-bottom: 10px;
 }
+
+.addAbsenceButton{
+    margin-right: 10px;
+    font-family: cursive;
+    font-weight: bold;
+}

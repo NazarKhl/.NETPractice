@@ -18,6 +18,7 @@ namespace ReactApp1.Server
             builder.Services.AddScoped(typeof(IRepository<>), typeof(EntityFrameworkRepository<>));
 
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IAbsenceService, AbsenceService>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();

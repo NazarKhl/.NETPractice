@@ -1,4 +1,6 @@
-﻿namespace ReactApp1.Server.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ReactApp1.Server.DTOs
 {
     public class AbsenceDTO
     {
