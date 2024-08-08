@@ -26,6 +26,12 @@ namespace ReactApp1.Server.Controllers
         [HttpPost]
         public IActionResult Add([FromBody] AbsenceDTO absenceDTO)
         {
+            if (absenceDTO == null || absenceDTO.UserId <= 0)
+            {
+                return BadRequest("Invalid absence data.");
+            }
+
+            _absenceService.AddAbsence(absenceDTO.UserId, absenceDTO);
             return CreatedAtAction(nameof(Get), new { id = absenceDTO.Id }, absenceDTO);
         }
 

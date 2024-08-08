@@ -26,6 +26,7 @@ namespace ReactApp1.Service
             return user.Absences.Select(a => new AbsenceDTO
             {
                 Id = a.Id,
+                UserId = a.UserId,
                 Type = (AbsenceDTO.AbsenceType)a.Type,
                 Description = a.Description,
                 DateFrom = a.DateFrom,
@@ -41,6 +42,7 @@ namespace ReactApp1.Service
             return new AbsenceDTO
             {
                 Id = absence.Id,
+                UserId = absence.UserId,
                 Type = (AbsenceDTO.AbsenceType)absence.Type,
                 Description = absence.Description,
                 DateFrom = absence.DateFrom,

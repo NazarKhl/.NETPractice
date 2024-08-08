@@ -6,12 +6,13 @@ namespace ReactApp1.Server.DTOs
     {
         public enum AbsenceType
         {
-            Illnes,
-            Vacations,
+            Illness,
+            Vacation,
             Other
         }
 
         public int Id { get; set; }
+        public int UserId { get; set; }
         public AbsenceType Type { get; set; }
         public string Description { get; set; }
         public DateTime? DateFrom { get; set; }

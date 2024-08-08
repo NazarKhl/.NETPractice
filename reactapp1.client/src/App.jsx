@@ -15,6 +15,10 @@ export default function App() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isUpdateModal, setIsUpdateModal] = useState(false);
     const [isUserActive, setIsUserActive] = useState(false);
+    const [absenceType, setAbsenceType] = useState('');
+    const [absenceDescription, setAbsenceDescription] = useState('');
+    const [absenceDateFrom, setAbsenceDateFrom] = useState(null);
+    const [absenceDateTo, setAbsenceDateTo] = useState(null);
 
     useEffect(() => {
         showUsers();
@@ -43,6 +47,10 @@ export default function App() {
         setIsModalOpen(true);
         setIsUpdateModal(!!user);
         setIsUserActive(user?.isActive || false);
+        setAbsenceType('');
+        setAbsenceDescription('');
+        setAbsenceDateFrom(null);
+        setAbsenceDateTo(null);
     };
 
     const hideModal = () => {
@@ -112,6 +120,22 @@ export default function App() {
     };
 
     const addAbsence = () => {
+        const newAbsence = {
+            userId: selectedUser.id, 
+            type: absenceType,
+            description: absenceDescription,
+            dateFrom: absenceDateFrom,
+            dateTo: absenceDateTo,
+        };
+        setSelectedUser(prev => ({
+            ...prev,
+            absences: [...(prev.absences || []), newAbsence],
+        }));
+
+        setAbsenceType('');
+        setAbsenceDescription('');
+        setAbsenceDateFrom(null);
+        setAbsenceDateTo(null);
     };
 
     const removeAbsence = (index) => {
@@ -159,7 +183,7 @@ export default function App() {
                             <td>{user.name}</td>
                             <td>{user.email}</td>
                             <td>
-                                <Button className="addAbsenceButton" oncClick={addAbsence}>Add Absence</Button>
+                                <Button className="addAbsenceButton" onClick={() => showModal(user)}>Add Absence</Button>
                                 <Button className="updateButton" onClick={() => showModal(user)}>Update</Button>
                                 <Button className="deleteButton" onClick={() => handleDelete(user.id)} danger>Delete</Button>
                             </td>
@@ -209,9 +233,48 @@ export default function App() {
                     <Checkbox checked={isUserActive} onChange={handleUserActivityChange} />
                     <label> User <strong>{selectedUser?.name}</strong> is {isUserActive ? 'active' : 'inactive'} </label>
                 </div>
-               
+
+                <h3>Add Absence</h3>
+                <Select
+                    value={absenceType}
+                    onChange={value => setAbsenceType(value)}
+                    placeholder="Select Absence Type"
+                    style={{ width: '100%' }}
+                >
+                    <Option value="Illness">Illness</Option>
+                    <Option value="Vacation">Vacation</Option>
+                    <Option value="Other">Other</Option>
+                </Select>
+                <Input
+                    value={absenceDescription}
+                    onChange={e => setAbsenceDescription(e.target.value)}
+                    placeholder="Description"
+                    style={{ marginTop: '10px' }}
+                />
+                <RangePicker
+                    value={[absenceDateFrom ? moment(absenceDateFrom) : null, absenceDateTo ? moment(absenceDateTo) : null]}
+                    onChange={(dates) => {
+                        setAbsenceDateFrom(dates ? dates[0].toDate() : null);
+                        setAbsenceDateTo(dates ? dates[1].toDate() : null);
+                    }}
+                    style={{ marginTop: '10px', width: '100%' }}
+                />
+                <Button onClick={addAbsence} type="primary" style={{ marginTop: '10px' }}>
+                    Add Absence
+                </Button>
+
+                <h3>Current Absences</h3>
+                <ul>
+                    {selectedUser?.absences.map((absence, index) => (
+                        <li key={index}>
+                            {absence.type} - {absence.description} from {moment(absence.dateFrom).format('YYYY-MM-DD')} to {moment(absence.dateTo).format('YYYY-MM-DD')}
+                            <Button onClick={() => removeAbsence(index)} type="link" danger style={{ marginLeft: '10px' }}>
+                                Remove
+                            </Button>
+                        </li>
+                    ))}
+                </ul>
             </Modal>
         </div>
     );
-
 }

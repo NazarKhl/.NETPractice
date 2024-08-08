@@ -6,6 +6,6 @@
         public string Name { get; set; }
         public string Email { get; set; }
         public bool isActive { get; set; }
-        public List<AbsenceDTO> Absences { get; set; } = new List<AbsenceDTO>();
+        public List<AbsenceDTO> Absences { get; set; }
     }
 }
