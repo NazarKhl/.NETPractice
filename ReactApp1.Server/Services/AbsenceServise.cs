@@ -4,6 +4,8 @@ using ReactApp1.Server.Interface;
 using System.Collections.Generic;
 using System.Linq;
 using static ReactApp1.Server.Models.Absence;
+using ReactApp1.Server.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ReactApp1.Service
 {
@@ -11,11 +13,13 @@ namespace ReactApp1.Service
     {
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<Absence> _absenceRepository;
+        private readonly UserDBContext dbContext;
 
-        public AbsenceService(IRepository<User> userRepository, IRepository<Absence> absenceRepository)
+        public AbsenceService(IRepository<User> userRepository, IRepository<Absence> absenceRepository, UserDBContext dbContext)
         {
             _userRepository = userRepository;
             _absenceRepository = absenceRepository;
+            this.dbContext = dbContext;
         }
 
         public List<AbsenceDTO> GetAllAbsences()
@@ -35,10 +39,10 @@ namespace ReactApp1.Service
 
         public List<AbsenceDTO> GetAbsencesByUserId(int userId)
         {
-            var user = _userRepository.GetById(userId);
+            var user = dbContext.Users.FirstOrDefault(i => i.Id == userId);
             if (user == null) return new List<AbsenceDTO>();
 
-            return user.Absences.Select(a => new AbsenceDTO
+            return _absenceRepository.GetAll().Where(a => a.UserId == userId).Select(a => new AbsenceDTO
             {
                 Id = a.Id,
                 UserId = a.UserId,

@@ -73,7 +73,7 @@ export default function App() {
     const showUserAbsences = async (user) => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/absence`);
+            const response = await fetch(`/api/absence/user/${user.id}`);
             const absences = await response.json();
             setSelectedUser({ ...user, absences });
             setIsShowAbsencesModalOpen(true);
@@ -300,7 +300,7 @@ export default function App() {
                     <Checkbox checked={isUserActive} onChange={handleUserActivityChange} />
                     <label> User <strong>{selectedUser?.name}</strong> is {isUserActive ? 'active' : 'inactive'} </label>
                 </div>
-            </Modal> 
+            </Modal>
             <Modal
                 title="Update User"
                 visible={isUpdateModalOpen}
