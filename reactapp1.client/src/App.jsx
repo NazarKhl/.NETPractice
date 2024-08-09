@@ -282,7 +282,6 @@ export default function App() {
                     <label> User <strong>{selectedUser?.name}</strong> is {isUserActive ? 'active' : 'inactive'} </label>
                 </div>
             </Modal>
-
             <Modal
                 title="Update User"
                 visible={isUpdateModalOpen}
@@ -360,22 +359,25 @@ export default function App() {
                     {selectedUser?.absences.map((absence, index) => (
                         <li key={index}>
                             <Select
+                                disabled
                                 value={absenceType !== null ? absenceType : absence.type}
                                 onChange={value => setAbsenceType(value)}
                                 placeholder="Select Absence Type"
-                                style={{ width: '100%' }}
+                                style={{ width: '100%', fontWeight: 'bold' }}
                             >
                                 <Option value={1}>Illness</Option>
                                 <Option value={2}>Vacation</Option>
                                 <Option value={3}>Other</Option>
                             </Select>
                             <Input
+                                disabled
                                 value={absenceDescription || absence.description}
                                 onChange={e => setAbsenceDescription(e.target.value)}
                                 placeholder="Description"
-                                style={{ marginTop: '10px' }}
+                                style={{ marginTop: '10px', fontWeight: 'bold' }}
                             />
                             <RangePicker
+                                disabled
                                 value={[
                                     absenceDateFrom ? moment(absenceDateFrom) : moment(absence.dateFrom),
                                     absenceDateTo ? moment(absenceDateTo) : moment(absence.dateTo)

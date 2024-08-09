@@ -29,7 +29,7 @@ namespace ReactApp1.Service
                     isActive = u.isActive,
                     Absences = u.Absences.Select(a => new AbsenceDTO
                     {
-                        Id = a.Id,
+                        Id = a.Id,   
                         Type = (AbsenceDTO.AbsenceType)a.Type,
                         Description = a.Description,
                         DateFrom = a.DateFrom,
