@@ -18,6 +18,21 @@ namespace ReactApp1.Service
             _absenceRepository = absenceRepository;
         }
 
+        public List<AbsenceDTO> GetAllAbsences()
+        {
+            return _absenceRepository.GetAll()
+                .Select(a => new AbsenceDTO
+                {
+                    Id = a.Id,
+                    UserId = a.UserId,
+                    Type = (AbsenceDTO.AbsenceType)a.Type,
+                    Description = a.Description,
+                    DateFrom = a.DateFrom,
+                    DateTo = a.DateTo
+                }).ToList();
+        }
+
+
         public List<AbsenceDTO> GetAbsencesByUserId(int userId)
         {
             var user = _userRepository.GetById(userId);

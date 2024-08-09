@@ -15,6 +15,26 @@ namespace ReactApp1.Server.Controllers
             _absenceService = absenceService;
         }
 
+        [HttpGet("user/{userId}")]
+        public IActionResult GetAbsencesForUser(int userId)
+        {
+            var absences = _absenceService.GetAbsencesByUserId(userId);
+            return Ok(absences);
+        }
+
+
+        [HttpGet]
+        public IActionResult GetAllAbsences()
+        {
+            var absences = _absenceService.GetAllAbsences();
+            if (absences == null || !absences.Any())
+            {
+                return NoContent();
+            }
+            return Ok(absences);
+        }
+
+
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {

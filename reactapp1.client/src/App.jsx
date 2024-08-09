@@ -24,6 +24,7 @@ export default function App() {
 
     useEffect(() => {
         showUsers();
+        
     }, []);
 
     const showUsers = async () => {
@@ -64,10 +65,20 @@ export default function App() {
         setIsAbsenceModalOpen(true);
     };
 
-    const showUserAbsences = (user) => {
-        setSelectedUser(user);
-        setIsShowAbsencesModalOpen(true);
+    const showUserAbsences = async (user) => {
+        setLoading(true);
+        try {
+            const response = await fetch(`/api/Absence`);
+            const absences = await response.json();
+            setSelectedUser({ ...user, absences });
+            setIsShowAbsencesModalOpen(true);
+        } catch (error) {
+            notification.error({ description: error.message });
+        } finally {
+            setLoading(false);
+        }
     };
+
 
     const hideModals = () => {
         setIsCreateModalOpen(false);
@@ -189,6 +200,7 @@ export default function App() {
         setIsUserActive(e.target.checked);
     };
 
+
     const filteredUsers = userFinder
         ? users.filter(user => user.id === parseInt(userFinder, 10))
         : users;
@@ -222,7 +234,7 @@ export default function App() {
                                 <Button className="addAbsenceButton" onClick={() => showAbsenceModal(user)}>Add Absence</Button>
                                 <Button className="updateButton" onClick={() => showUpdateModal(user)}>Update</Button>
                                 <Button className="showAbsencesButton" onClick={() => showUserAbsences(user)}>Show Absences</Button>
-                                <Button className="deleteButton" onClick={() => handleDelete(user.id)} danger>Delete</Button>
+                                <Button type="primary" className="deleteButton" onClick={() => handleDelete(user.id)} danger>Delete</Button>
                             </td>
                         </tr>
                     )}
@@ -284,6 +296,7 @@ export default function App() {
                     placeholder="Name"
                 />
                 <Input
+                    style="inputField"
                     name="email"
                     value={selectedUser?.email || ''}
                     onChange={handleInputChange}
@@ -294,7 +307,7 @@ export default function App() {
                     <label> User <strong>{selectedUser?.name}</strong> is {isUserActive ? 'active' : 'inactive'} </label>
                 </div>
                 <ul>
-                
+
                     {selectedUser?.absences.map((absence, index) => (
                         <li key={index}>
                             {absenceTypeLabels[absence.type]} - {absence.description} from {moment(absence.dateFrom).format('YYYY-MM-DD')} to {moment(absence.dateTo).format('YYYY-MM-DD')}
@@ -343,7 +356,6 @@ export default function App() {
                 onCancel={hideModals}
                 footer={null}
             >
-                <h3>Absences for User: {selectedUser?.name}</h3>
                 <ul>
                     {selectedUser?.absences.map((absence, index) => (
                         <li key={index}>
@@ -374,16 +386,14 @@ export default function App() {
                                 }}
                                 style={{ marginTop: '10px', width: '100%' }}
                             />
-                            <Button onClick={() => handleAbsenceUpdate(index)} type="primary" style={{ marginTop: '10px' }}>
-                                Update Absence
-                            </Button>
-                            <Button onClick={() => removeAbsence(index)} type="link" danger style={{ marginLeft: '10px' }}>
+                            <Button className="removeAbsenceButton" type="primary" onClick={() => removeAbsence(index)} danger >
                                 Remove
                             </Button>
                         </li>
                     ))}
                 </ul>
             </Modal>
+
         </div>
     );
 }

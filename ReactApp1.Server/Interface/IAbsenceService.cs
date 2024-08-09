@@ -5,6 +5,7 @@ namespace ReactApp1.Server.Interface
 {
     public interface IAbsenceService
     {
+        List<AbsenceDTO> GetAllAbsences();
         List<AbsenceDTO> GetAbsencesByUserId(int userId);
         AbsenceDTO? GetAbsence(int id);
         void AddAbsence(int userId, AbsenceDTO absenceDTO);
