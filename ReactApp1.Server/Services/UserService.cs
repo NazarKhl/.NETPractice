@@ -3,6 +3,7 @@ using ReactApp1.Server.Models;
 using ReactApp1.Server.Interface;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using static ReactApp1.Server.Models.Absence;
 
 namespace ReactApp1.Service
@@ -29,7 +30,7 @@ namespace ReactApp1.Service
                     isActive = u.isActive,
                     Absences = u.Absences.Select(a => new AbsenceDTO
                     {
-                        Id = a.Id,   
+                        Id = a.Id,
                         Type = (AbsenceDTO.AbsenceType)a.Type,
                         Description = a.Description,
                         DateFrom = a.DateFrom,
@@ -154,6 +155,36 @@ namespace ReactApp1.Service
                 .ToList();
         }
 
+        public async Task<(List<UserDTO> users, int totalCount)> GetPage(int pageNumber, int pageSize)
+        {
+            var query = _userRepository.GetAll();
+
+            var totalCount = query.Count();
+
+            var users = query
+                .OrderBy(u => u.Id) 
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(u => new UserDTO
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Email = u.Email,
+                    isActive = u.isActive,
+                    Absences = u.Absences.Select(a => new AbsenceDTO
+                    {
+                        Id = a.Id,
+                        Type = (AbsenceDTO.AbsenceType)a.Type,
+                        Description = a.Description,
+                        DateFrom = a.DateFrom,
+                        DateTo = a.DateTo
+                    }).ToList()
+                })
+                .ToList();
+
+            return (users, totalCount);
+        }
+
         public void AddAbsence(int userId, AbsenceDTO absenceDTO)
         {
             var user = _userRepository.GetById(userId);
@@ -171,6 +202,7 @@ namespace ReactApp1.Service
                 _userRepository.Update(user);
             }
         }
+
         public void DeleteAbsence(int absenceId)
         {
             var absence = _absenceRepository.GetById(absenceId);

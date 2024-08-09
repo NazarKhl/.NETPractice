@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-import { Modal, Button, Input, Checkbox, notification, DatePicker, Select } from 'antd';
+import { Modal, Button, Input, Checkbox, notification, DatePicker, Select, Pagination } from 'antd';
 import moment from 'moment';
 import UserChart from './Charts/UserChart';
 
@@ -21,18 +21,23 @@ export default function App() {
     const [absenceDescription, setAbsenceDescription] = useState('');
     const [absenceDateFrom, setAbsenceDateFrom] = useState(null);
     const [absenceDateTo, setAbsenceDateTo] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(1);
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [visibleActivity, setVisibleActivity] = useState(false);
 
     useEffect(() => {
-        showUsers();
-        
-    }, []);
+        showUsers(currentPage);
+    }, [currentPage, pageSize]);
 
-    const showUsers = async () => {
+    const showUsers = async (page = 1) => {
         setLoading(true);
         try {
-            const response = await fetch('/api/user');
+            const response = await fetch(`/api/user/paged?pageNumber=${page}&pageSize=${pageSize}`);
             const data = await response.json();
-            setUsers(data);
+            setUsers(data.users);
+            setTotalUsers(data.totalCount);
+            setCurrentPage(page);
         } catch (error) {
             notification.error({ description: error.message });
         } finally {
@@ -68,7 +73,7 @@ export default function App() {
     const showUserAbsences = async (user) => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/Absence`);
+            const response = await fetch(`/api/absence`);
             const absences = await response.json();
             setSelectedUser({ ...user, absences });
             setIsShowAbsencesModalOpen(true);
@@ -79,12 +84,12 @@ export default function App() {
         }
     };
 
-
     const hideModals = () => {
         setIsCreateModalOpen(false);
         setIsUpdateModalOpen(false);
         setIsAbsenceModalOpen(false);
         setIsShowAbsencesModalOpen(false);
+        setVisibleActivity(false);
         setSelectedUser(null);
     };
 
@@ -97,7 +102,7 @@ export default function App() {
                 body: JSON.stringify(payload),
             });
             notification.success({ message: 'User created successfully' });
-            await showUsers();
+            await showUsers(currentPage);
             hideModals();
         } catch (error) {
             notification.error({ message: 'Error creating user', description: error.message });
@@ -113,7 +118,7 @@ export default function App() {
                 body: JSON.stringify(payload),
             });
             notification.success({ message: 'User updated successfully' });
-            await showUsers();
+            await showUsers(currentPage);
             hideModals();
         } catch (error) {
             notification.error({ message: 'Error updating user', description: error.message });
@@ -138,7 +143,7 @@ export default function App() {
                 body: JSON.stringify(newAbsence),
             });
             notification.success({ message: 'Absence added successfully' });
-            await showUsers();
+            await showUsers(currentPage);
             hideModals();
         } catch (error) {
             notification.error({ message: 'Error adding absence', description: error.message });
@@ -161,7 +166,7 @@ export default function App() {
                         method: 'DELETE',
                     });
                     notification.success({ message: 'User deleted successfully' });
-                    await showUsers();
+                    await showUsers(currentPage);
                 } catch (error) {
                     notification.error({ message: 'Error deleting user', description: error.message });
                 }
@@ -180,7 +185,7 @@ export default function App() {
                 method: 'DELETE',
             });
             notification.success({ message: 'Absence removed successfully' });
-            await showUsers();
+            await showUsers(currentPage);
         } catch (error) {
             notification.error({ message: 'Error removing absence', description: error.message });
         }
@@ -200,7 +205,6 @@ export default function App() {
         setIsUserActive(e.target.checked);
     };
 
-
     const filteredUsers = userFinder
         ? users.filter(user => user.id === parseInt(userFinder, 10))
         : users;
@@ -211,11 +215,15 @@ export default function App() {
         3: 'Other'
     };
 
+    const showUserActivity = () => {
+        setVisibleActivity(true);
+    }
+
     const contents = loading
         ? <p><em>Loading... Please wait.</em></p>
         : filteredUsers.length === 0
             ? <p><em>No users found. Click "Show all users" to fetch data.</em></p>
-            : <table className="table table-striped" aria-labelledby="tableLabel">
+            : <table style={{ marginLeft: 50 }} className="table table-striped" aria-labelledby="tableLabel">
                 <thead>
                     <tr>
                         <th>Id</th>
@@ -252,13 +260,25 @@ export default function App() {
                 className="inputField"
                 placeholder='Find by ID'
             />
-            <Button onClick={showUsers} className="showUsers">Show all users</Button>
+            <Button onClick={() => showUsers(currentPage)} className="showUsers">All users</Button>
             <Button onClick={showCreateModal} className="createUser">Create New User</Button>
             <Button className="downloadJSON" onClick={downloadJSON}>Download .json</Button>
+            <Button onClick={showUserActivity} className="userActivityCharrt">User Activity</Button>
             <p>This component demonstrates fetching data from the server.</p>
-            {contents}
-            <UserChart users={users} />
 
+            {contents}
+
+            <Pagination
+                current={currentPage}
+                pageSize={pageSize}
+                total={totalUsers}
+                onChange={(page, pageSize) => {
+                    setCurrentPage(page);
+                    setPageSize(pageSize);
+                }}
+                showSizeChanger
+                style={{ marginLeft: 170, marginTop: 50 }}
+            />
             <Modal
                 title="Create User"
                 visible={isCreateModalOpen}
@@ -266,6 +286,7 @@ export default function App() {
                 onCancel={hideModals}
             >
                 <Input
+                    style={{ marginBottom: 10 }}
                     name="name"
                     value={selectedUser?.name || ''}
                     onChange={handleInputChange}
@@ -289,13 +310,13 @@ export default function App() {
                 onCancel={hideModals}
             >
                 <Input
+                    style={{ marginBottom: 10 }}
                     name="name"
                     value={selectedUser?.name || ''}
                     onChange={handleInputChange}
                     placeholder="Name"
                 />
                 <Input
-                    style="inputField"
                     name="email"
                     value={selectedUser?.email || ''}
                     onChange={handleInputChange}
@@ -306,7 +327,6 @@ export default function App() {
                     <label> User <strong>{selectedUser?.name}</strong> is {isUserActive ? 'active' : 'inactive'} </label>
                 </div>
                 <ul>
-
                     {selectedUser?.absences.map((absence, index) => (
                         <li key={index}>
                             {absenceTypeLabels[absence.type]} - {absence.description} from {moment(absence.dateFrom).format('YYYY-MM-DD')} to {moment(absence.dateTo).format('YYYY-MM-DD')}
@@ -395,7 +415,14 @@ export default function App() {
                     ))}
                 </ul>
             </Modal>
-
+            <Modal
+                title="User Activity"
+                visible={visibleActivity}
+                onCancel={hideModals}
+                footer={null}
+            >
+                <UserChart users={users} />
+            </Modal>
         </div>
     );
 }

@@ -84,3 +84,9 @@ th, td {
     margin-top: 10px;
     margin-bottom: 20px;
 }
+
+.userActivityCharrt{
+    margin-left: 10px;
+    font-family: cursive;
+    font-weight: bold;
+}

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ReactApp1.Server.DTOs;
 using ReactApp1.Server.Interface;
+using System.Threading.Tasks;
 
 namespace ReactApp1.Server.Controllers
 {
@@ -14,8 +15,6 @@ namespace ReactApp1.Server.Controllers
         {
             _userService = userService;
         }
-
-
 
         [HttpGet]
         public IActionResult GetAll()
@@ -65,6 +64,13 @@ namespace ReactApp1.Server.Controllers
         {
             var users = _userService.GetInactiveUsers();
             return Ok(users);
+        }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1)
+        {
+            var (users, totalCount) = await _userService.GetPage(pageNumber, pageSize);
+            return Ok(new { users, totalCount });
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using ReactApp1.Server.Models;
-using ReactApp1.Server.DTOs;
+﻿using ReactApp1.Server.DTOs;
+using ReactApp1.Server.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ReactApp1.Server.Interface
 {
@@ -12,5 +14,6 @@ namespace ReactApp1.Server.Interface
         void Update(UserDTO userDTO);
         List<UserDTO> GetActiveUsers();
         List<UserDTO> GetInactiveUsers();
+        Task<(List<UserDTO> users, int totalCount)> GetPage(int pageNumber, int pageSize); 
     }
 }
