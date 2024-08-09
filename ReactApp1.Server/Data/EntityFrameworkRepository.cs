@@ -19,9 +19,9 @@ namespace ReactApp1.Server.Data
             return _dbSet.Find(id);
         }
 
-        public IEnumerable<T> GetAll() 
+        public IQueryable<T> GetAll() 
         {
-            return _dbSet.ToList();
+            return _dbSet.AsQueryable();
         }
 
         public void Add(T entity) 

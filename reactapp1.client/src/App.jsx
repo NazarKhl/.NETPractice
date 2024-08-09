@@ -265,9 +265,7 @@ export default function App() {
             <Button className="downloadJSON" onClick={downloadJSON}>Download .json</Button>
             <Button onClick={showUserActivity} className="userActivityCharrt">User Activity</Button>
             <p>This component demonstrates fetching data from the server.</p>
-
             {contents}
-
             <Pagination
                 current={currentPage}
                 pageSize={pageSize}
@@ -302,7 +300,7 @@ export default function App() {
                     <Checkbox checked={isUserActive} onChange={handleUserActivityChange} />
                     <label> User <strong>{selectedUser?.name}</strong> is {isUserActive ? 'active' : 'inactive'} </label>
                 </div>
-            </Modal>
+            </Modal> 
             <Modal
                 title="Update User"
                 visible={isUpdateModalOpen}
@@ -326,16 +324,6 @@ export default function App() {
                     <Checkbox checked={isUserActive} onChange={handleUserActivityChange} />
                     <label> User <strong>{selectedUser?.name}</strong> is {isUserActive ? 'active' : 'inactive'} </label>
                 </div>
-                <ul>
-                    {selectedUser?.absences.map((absence, index) => (
-                        <li key={index}>
-                            {absenceTypeLabels[absence.type]} - {absence.description} from {moment(absence.dateFrom).format('YYYY-MM-DD')} to {moment(absence.dateTo).format('YYYY-MM-DD')}
-                            <Button onClick={() => removeAbsence(index)} type="link" danger style={{ marginLeft: '10px' }}>
-                                Remove
-                            </Button>
-                        </li>
-                    ))}
-                </ul>
             </Modal>
             <Modal
                 title="Add Absence"
@@ -368,7 +356,6 @@ export default function App() {
                     style={{ marginTop: '10px', width: '100%' }}
                 />
             </Modal>
-
             <Modal
                 title="User Absences"
                 visible={isShowAbsencesModalOpen}
@@ -416,7 +403,6 @@ export default function App() {
                 </ul>
             </Modal>
             <Modal
-                title="User Activity"
                 visible={visibleActivity}
                 onCancel={hideModals}
                 footer={null}

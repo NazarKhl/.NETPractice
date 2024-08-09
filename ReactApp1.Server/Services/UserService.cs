@@ -170,15 +170,7 @@ namespace ReactApp1.Service
                     Id = u.Id,
                     Name = u.Name,
                     Email = u.Email,
-                    isActive = u.isActive,
-                    Absences = u.Absences.Select(a => new AbsenceDTO
-                    {
-                        Id = a.Id,
-                        Type = (AbsenceDTO.AbsenceType)a.Type,
-                        Description = a.Description,
-                        DateFrom = a.DateFrom,
-                        DateTo = a.DateTo
-                    }).ToList()
+                    isActive = u.isActive
                 })
                 .ToList();
 
