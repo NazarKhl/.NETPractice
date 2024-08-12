@@ -34,10 +34,9 @@ export default function App() {
     const showUsers = async (page = 1) => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/user/paged?pageNumber=${page}&pageSize=${pageSize}`);
+            const response = await fetch(`/api/user/paged?pageNumber=${page}&pageSize=${pageSize}&sortColumn=${sortConfig.key}&sortDirection=${sortConfig.direction}`);
             const data = await response.json();
-            const sortedUsers = sortUsers(data.users);
-            setUsers(sortedUsers);
+            setUsers(data.users);
             setTotalUsers(data.totalCount);
             setCurrentPage(page);
         } catch (error) {
@@ -227,21 +226,6 @@ export default function App() {
         setVisibleActivity(true);
     }
 
-    const sortUsers = (users) => {
-        if (sortConfig.key) {
-            return [...users].sort((a, b) => {
-                if (a[sortConfig.key] < b[sortConfig.key]) {
-                    return sortConfig.direction === 'asc' ? -1 : 1;
-                }
-                if (a[sortConfig.key] > b[sortConfig.key]) {
-                    return sortConfig.direction === 'asc' ? 1 : -1;
-                }
-                return 0;
-            });
-        }
-        return users;
-    };
-
     const requestSort = (key) => {
         let direction = 'asc';
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -249,6 +233,7 @@ export default function App() {
         }
         setSortConfig({ key, direction });
     };
+
 
     const contents = loading
         ? <p><em>Loading... Please wait.</em></p>
@@ -258,8 +243,8 @@ export default function App() {
                 <thead>
                     <tr>
                         <th className="sortButtons" onClick={() => requestSort('id')}>Id</th>
-                        <th className="sortButtons"  onClick={() => requestSort('name')}>Name</th>
-                        <th className="sortButtons"  onClick={() => requestSort('email')}>Email</th>
+                        <th className="sortButtons" onClick={() => requestSort('name')}>Name</th>
+                        <th className="sortButtons" onClick={() => requestSort('email')}>Email</th>
                         <th>Action buttons</th>
                     </tr>
                 </thead>
@@ -305,7 +290,7 @@ export default function App() {
                     setCurrentPage(page);
                     setPageSize(pageSize);
                 }}
-                showQuickJumper 
+                showQuickJumper
                 showSizeChanger
                 style={{ marginLeft: 100, marginTop: 50 }}
             />
