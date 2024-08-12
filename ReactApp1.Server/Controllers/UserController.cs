@@ -68,27 +68,11 @@ namespace ReactApp1.Server.Controllers
         }
 
         [HttpGet("paged")]
-        public async Task<IActionResult> GetPaged(
-                [FromQuery] int pageNumber = 1,
-                [FromQuery] int pageSize = 10,
-                [FromQuery] string? sortColumn = null,
-                [FromQuery] string? sortDirection = null,
-                [FromQuery] string? nameFilter = null,
-                [FromQuery] string? emailFilter = null,
-                [FromQuery] int? idFilter = null)
+        public async Task<IActionResult> GetPaged([FromQuery] UserPaginationDTO paginationDTO)
         {
-            var (users, totalCount) = await _userService.GetFilteredUsers(
-                idFilter,
-                nameFilter,
-                emailFilter,
-                pageNumber,
-                pageSize,
-                sortColumn,
-                sortDirection);
+            var (users, totalCount) = await _userService.GetPage(paginationDTO);
 
             return Ok(new { users, totalCount });
         }
     }
-
-
 }

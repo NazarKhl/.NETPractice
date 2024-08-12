@@ -25,7 +25,10 @@ export default function App() {
     const [pageSize, setPageSize] = useState(10);
     const [totalUsers, setTotalUsers] = useState(0);
     const [visibleActivity, setVisibleActivity] = useState(false);
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: " " });
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: "desc" });
+    const [idFilter, setIdFilter] = useState('');
+    const [nameFilter, setNameFilter] = useState('');
+    const [emailFilter, setEmailFilter] = useState('');
 
     useEffect(() => {
         showUsers(currentPage);
@@ -34,7 +37,7 @@ export default function App() {
     const showUsers = async (page = 1) => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/user/paged?pageNumber=${page}&pageSize=${pageSize}&sortColumn=${sortConfig.key}&sortDirection=${sortConfig.direction}`);
+            const response = await fetch(`/api/user/paged?pageNumber=${page}&pageSize=${pageSize}&sortColumn=${sortConfig.key}&sortDirection=${sortConfig.direction}&idFilter=${idFilter}&nameFilter=${nameFilter}&emailFilter=${emailFilter}`);
             const data = await response.json();
             setUsers(data.users);
             setTotalUsers(data.totalCount);
@@ -43,13 +46,25 @@ export default function App() {
             notification.error({ description: error.message });
         } finally {
             setLoading(false);
-            setUserFinder('');
         }
     };
 
-    const handleInput = (e) => {
-        setUserFinder(e.target.value);
+
+    const handleIdFiterChange = (e) => {
+        setIdFilter(e.target.value);
+        showUsers(currentPage);
     };
+
+    const handleNameFilterChange = (e) => {
+        setNameFilter(e.target.value);
+        showUsers(currentPage); 
+    };
+
+    const handleEmailFilterChange = (e) => {
+        setEmailFilter(e.target.value);
+        showUsers(currentPage);  
+    };
+
 
     const showCreateModal = () => {
         setSelectedUser({ name: '', email: '', isActive: false, absences: [] });
@@ -238,7 +253,7 @@ export default function App() {
     const contents = loading
         ? <p><em>Loading... Please wait.</em></p>
         : filteredUsers.length === 0
-            ? <p><em>No users found. Click "Show all users" to fetch data.</em></p>
+            ? <p></p>
             : <table style={{ marginLeft: 50 }} className="table table-striped" aria-labelledby="tableLabel">
                 <thead>
                     <tr>
@@ -268,15 +283,29 @@ export default function App() {
     return (
         <div>
             <h1 id="tableLabel">User Data</h1>
-            <Input
-                min={1}
-                value={userFinder}
-                onChange={handleInput}
-                type="number"
-                className="inputField"
-                placeholder='Find by ID'
-            />
-            <Button onClick={() => showUsers(currentPage)} className="showUsers">All users</Button>
+
+            <div style={{ marginBottom: 20 }}>
+                <Input
+                    placeholder="Filter by ID"
+                    value={idFilter}
+                    onChange={handleIdFiterChange}
+                    className="filterFields"
+                />
+                <Input
+                    placeholder="Filter by Name"
+                    value={nameFilter}
+                    onChange={handleNameFilterChange}
+                    className="filterFields"
+                />
+                <Input
+                    placeholder="Filter by Email"
+                    value={emailFilter}
+                    onChange={handleEmailFilterChange}
+                    className="filterFields"
+                />
+            </div>
+
+            <Button onClick={() => showUsers(currentPage)} className="showUsers">Show users</Button><br/>
             <Button onClick={showCreateModal} className="createUser">Create New User</Button>
             <Button className="downloadJSON" onClick={downloadJSON}>Download .json</Button>
             <Button onClick={showUserActivity} className="userActivityCharrt">User Activity</Button>

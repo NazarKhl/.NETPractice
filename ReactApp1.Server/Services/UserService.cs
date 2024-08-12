@@ -150,99 +150,50 @@ namespace ReactApp1.Service
                 .ToList();
         }
 
-        public async Task<(List<UserDTO> users, int totalCount)> GetPage(int pageNumber, int pageSize, string? sortColumn = nameof(User.Id), string? sortDirection = SORT_ASC_DIR)
+        public async Task<(List<UserDTO> users, int totalCount)> GetPage(UserPaginationDTO paginationDTO)
         {
             var query = _userRepository.GetAll();
 
-            var totalCount = query.Count();
-
-            switch (sortColumn)
+            if (paginationDTO.IdFilter.HasValue)
             {
-                case nameof(User.Name):
-                    query = sortDirection?.ToLower() == SORT_ASC_DIR
-                        ? query.OrderBy(u => u.Name)
-                        : query.OrderByDescending(u => u.Name);
-                    break;
-                case nameof(User.Email):
-                    query = sortDirection?.ToLower() == SORT_ASC_DIR
-                        ? query.OrderBy(u => u.Email)
-                        : query.OrderByDescending(u => u.Email);
-                    break;
-                case nameof(User.Id):
-                default:
-                    query = sortDirection?.ToLower() == SORT_ASC_DIR
-                        ? query.OrderBy(u => u.Id)
-                        : query.OrderByDescending(u => u.Id);
-                    break;
+                query = query.Where(u => u.Id == paginationDTO.IdFilter.Value);
             }
 
-            var users = query
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(u => new UserDTO
-                {
-                    Id = u.Id,
-                    Name = u.Name,
-                    Email = u.Email,
-                    isActive = u.isActive,
-                    Absences = u.Absences.Select(a => new AbsenceDTO
-                    {
-                        Id = a.Id,
-                        Type = (AbsenceDTO.AbsenceType)a.Type,
-                        Description = a.Description,
-                        DateFrom = a.DateFrom,
-                        DateTo = a.DateTo
-                    }).ToList()
-                })
-                .ToList();
-
-            return (users, totalCount);
-        }
-
-        public async Task<(List<UserDTO> users, int totalCount)> GetFilteredUsers(int? id, string? name, string? email, int pageNumber, int pageSize, string? sortColumn = "Id", string? sortDirection = "asc")
-        {
-            var query = _userRepository.GetAll();
-
-            if (id.HasValue)
+            if (!string.IsNullOrEmpty(paginationDTO.NameFilter))
             {
-                query = query.Where(u => u.Id == id.Value);
+                query = query.Where(u => u.Name.Contains(paginationDTO.NameFilter));
             }
 
-            if (!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(paginationDTO.EmailFilter))
             {
-                query = query.Where(u => u.Name.Contains(name));
-            }
-
-            if (!string.IsNullOrEmpty(email))
-            {
-                query = query.Where(u => u.Email.Contains(email));
+                query = query.Where(u => u.Email.Contains(paginationDTO.EmailFilter));
             }
 
             var totalCount = await query.CountAsync();
 
-            switch (sortColumn)
+            switch (paginationDTO.SortColumn)
             {
                 case nameof(User.Name):
-                    query = sortDirection?.ToLower() == SORT_ASC_DIR
+                    query = paginationDTO.SortDirection?.ToLower() == SORT_ASC_DIR
                         ? query.OrderBy(u => u.Name)
                         : query.OrderByDescending(u => u.Name);
                     break;
                 case nameof(User.Email):
-                    query = sortDirection?.ToLower() == SORT_ASC_DIR
+                    query = paginationDTO.SortDirection?.ToLower() == SORT_ASC_DIR
                         ? query.OrderBy(u => u.Email)
                         : query.OrderByDescending(u => u.Email);
                     break;
                 case nameof(User.Id):
                 default:
-                    query = sortDirection?.ToLower() == SORT_ASC_DIR
+                    query = paginationDTO.SortDirection?.ToLower() == SORT_ASC_DIR
                         ? query.OrderBy(u => u.Id)
                         : query.OrderByDescending(u => u.Id);
                     break;
             }
 
             var users = await query
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((paginationDTO.PageNumber - 1) * paginationDTO.PageSize)
+                .Take(paginationDTO.PageSize)
                 .Select(u => new UserDTO
                 {
                     Id = u.Id,

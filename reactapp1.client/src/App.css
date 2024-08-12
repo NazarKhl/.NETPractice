@@ -29,12 +29,14 @@ th, td {
     margin-left: 10px;
 }
 
-.showUsers{
+.showUsers {
+    width: 420px;
     margin-top: 13px;
     padding: 10px;
     font-weight: bold;
     margin-left: 10px;
     font-family: cursive;
+    transition: 0.5s;
 }
 
 .downloadJSON{
@@ -93,4 +95,10 @@ th, td {
 
 .sortButtons{
     cursor: pointer;
+}
+
+.filterFields{
+    width: 240px;
+    margin-top: 20px;
+    margin-left: 40px;
 }
