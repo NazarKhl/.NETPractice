@@ -25,11 +25,11 @@ export default function App() {
     const [pageSize, setPageSize] = useState(10);
     const [totalUsers, setTotalUsers] = useState(0);
     const [visibleActivity, setVisibleActivity] = useState(false);
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: " " });
 
     useEffect(() => {
         showUsers(currentPage);
-    }, [currentPage, pageSize, sortConfig]);
+    }, [currentPage, pageSize, sortConfig, setIsAbsenceModalOpen]);
 
     const showUsers = async (page = 1) => {
         setLoading(true);
@@ -40,7 +40,6 @@ export default function App() {
             setUsers(sortedUsers);
             setTotalUsers(data.totalCount);
             setCurrentPage(page);
-            console.log(sortedUsers);
         } catch (error) {
             notification.error({ description: error.message });
         } finally {
@@ -182,7 +181,13 @@ export default function App() {
     };
 
     const removeAbsence = async (index) => {
+        const updatedAbsences = [...selectedUser.absences];
         const absenceId = selectedUser.absences[index].id;
+        updatedAbsences.splice(index, 1);
+        setSelectedUser(prev => ({
+            ...prev,
+            absences: updatedAbsences
+        }));
         try {
             await fetch(`/api/absence/${absenceId}`, {
                 method: 'DELETE',

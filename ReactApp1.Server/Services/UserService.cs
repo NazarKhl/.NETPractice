@@ -90,7 +90,7 @@ namespace ReactApp1.Service
             }
         }
 
-        public void Update(UserDTO userDTO)
+        public void Update(UserUpdateDTO userDTO)
         {
             var user = _userRepository.GetById(userDTO.Id);
             if (user != null)
@@ -99,17 +99,10 @@ namespace ReactApp1.Service
                 user.Email = userDTO.Email;
                 user.isActive = userDTO.isActive;
 
-                user.Absences = userDTO.Absences.Select(a => new Absence
-                {
-                    Type = (AbsenceType)a.Type,
-                    Description = a.Description,
-                    DateFrom = a.DateFrom ?? default,
-                    DateTo = a.DateTo ?? default
-                }).ToList();
-
                 _userRepository.Update(user);
             }
         }
+
 
         public List<UserDTO> GetActiveUsers()
         {

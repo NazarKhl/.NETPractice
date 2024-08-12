@@ -46,11 +46,12 @@ namespace ReactApp1.Server.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put([FromBody] UserDTO userDTO)
+        public IActionResult Put([FromBody] UserUpdateDTO userDTO)
         {
             _userService.Update(userDTO);
             return NoContent();
         }
+
 
         [HttpGet("active")]
         public IActionResult GetActiveUsers()
