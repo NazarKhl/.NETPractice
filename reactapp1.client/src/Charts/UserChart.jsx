@@ -11,9 +11,9 @@ const UserChart = ({ users }) => {
         labels: ['Active Users', 'Inactive Users'],
         datasets: [
             {
-                label: '',
+                label: 'Visibility',
                 data: [activeUsers, inactiveUsers],
-                backgroundColor: ['#36a2eb', '#ff6384'],
+                backgroundColor: ['#36a2eb', '#ff4d4f']
             },
         ],
     };

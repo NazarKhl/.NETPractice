@@ -22,22 +22,25 @@ export default function App() {
     const [absenceDateFrom, setAbsenceDateFrom] = useState(null);
     const [absenceDateTo, setAbsenceDateTo] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
     const [totalUsers, setTotalUsers] = useState(0);
     const [visibleActivity, setVisibleActivity] = useState(false);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
     useEffect(() => {
         showUsers(currentPage);
-    }, [currentPage, pageSize]);
+    }, [currentPage, pageSize, sortConfig]);
 
     const showUsers = async (page = 1) => {
         setLoading(true);
         try {
             const response = await fetch(`/api/user/paged?pageNumber=${page}&pageSize=${pageSize}`);
             const data = await response.json();
-            setUsers(data.users);
+            const sortedUsers = sortUsers(data.users);
+            setUsers(sortedUsers);
             setTotalUsers(data.totalCount);
             setCurrentPage(page);
+            console.log(sortedUsers);
         } catch (error) {
             notification.error({ description: error.message });
         } finally {
@@ -219,6 +222,29 @@ export default function App() {
         setVisibleActivity(true);
     }
 
+    const sortUsers = (users) => {
+        if (sortConfig.key) {
+            return [...users].sort((a, b) => {
+                if (a[sortConfig.key] < b[sortConfig.key]) {
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                }
+                if (a[sortConfig.key] > b[sortConfig.key]) {
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+        return users;
+    };
+
+    const requestSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
     const contents = loading
         ? <p><em>Loading... Please wait.</em></p>
         : filteredUsers.length === 0
@@ -226,9 +252,9 @@ export default function App() {
             : <table style={{ marginLeft: 50 }} className="table table-striped" aria-labelledby="tableLabel">
                 <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>Email</th>
+                        <th className="sortButtons" onClick={() => requestSort('id')}>Id</th>
+                        <th className="sortButtons"  onClick={() => requestSort('name')}>Name</th>
+                        <th className="sortButtons"  onClick={() => requestSort('email')}>Email</th>
                         <th>Action buttons</th>
                     </tr>
                 </thead>
@@ -274,8 +300,9 @@ export default function App() {
                     setCurrentPage(page);
                     setPageSize(pageSize);
                 }}
+                showQuickJumper 
                 showSizeChanger
-                style={{ marginLeft: 170, marginTop: 50 }}
+                style={{ marginLeft: 100, marginTop: 50 }}
             />
             <Modal
                 title="Create User"
