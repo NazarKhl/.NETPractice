@@ -2,9 +2,6 @@
 using ReactApp1.Server.DTOs;
 using ReactApp1.Server.Interface;
 using ReactApp1.Server.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using static ReactApp1.Server.Models.Absence;
 
 namespace ReactApp1.Service

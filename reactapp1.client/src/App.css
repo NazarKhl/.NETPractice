@@ -30,7 +30,7 @@ th, td {
 }
 
 .showUsers {
-    width: 420px;
+    width: 540px;
     margin-top: 13px;
     padding: 10px;
     font-weight: bold;
@@ -101,4 +101,12 @@ th, td {
     width: 240px;
     margin-top: 20px;
     margin-left: 40px;
+}
+
+.clearFields {
+    margin-top: 20px;
+    margin-left: 10px;
+    margin-bottom: 40px;
+    font-family: cursive;
+    font-weight: bold;
 }

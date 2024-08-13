@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ReactApp1.Server.DTOs;
 using ReactApp1.Server.Interface;
-using System.Threading.Tasks;
 
 namespace ReactApp1.Server.Controllers
 {
@@ -71,7 +70,6 @@ namespace ReactApp1.Server.Controllers
         public async Task<IActionResult> GetPaged([FromQuery] UserPaginationDTO paginationDTO)
         {
             var (users, totalCount) = await _userService.GetPage(paginationDTO);
-
             return Ok(new { users, totalCount });
         }
     }

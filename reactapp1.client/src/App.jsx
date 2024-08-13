@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-import { Modal, Button, Input, Checkbox, notification, DatePicker, Select, Pagination } from 'antd';
+import { Modal, Button, Input, Checkbox, notification, DatePicker, Select, Pagination, Spin } from 'antd';
 import moment from 'moment';
 import UserChart from './Charts/UserChart';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
+
 
 export default function App() {
     const [users, setUsers] = useState([]);
@@ -30,6 +31,7 @@ export default function App() {
     const [nameFilter, setNameFilter] = useState('');
     const [emailFilter, setEmailFilter] = useState('');
 
+
     useEffect(() => {
         showUsers(currentPage);
     }, [currentPage, pageSize, sortConfig, setIsAbsenceModalOpen]);
@@ -51,6 +53,7 @@ export default function App() {
 
 
     const handleIdFiterChange = (e) => {
+  
         setIdFilter(e.target.value);
         showUsers(currentPage);
     };
@@ -249,9 +252,15 @@ export default function App() {
         setSortConfig({ key, direction });
     };
 
+    const clearFields = () => {
+        setIdFilter("");
+        setNameFilter("");
+        setEmailFilter("");
+        showUsers();
+    }
 
     const contents = loading
-        ? <p><em>Loading... Please wait.</em></p>
+        ? <Spin size="large" />
         : filteredUsers.length === 0
             ? <p></p>
             : <table style={{ marginLeft: 50 }} className="table table-striped" aria-labelledby="tableLabel">
@@ -309,7 +318,7 @@ export default function App() {
             <Button onClick={showCreateModal} className="createUser">Create New User</Button>
             <Button className="downloadJSON" onClick={downloadJSON}>Download .json</Button>
             <Button onClick={showUserActivity} className="userActivityCharrt">User Activity</Button>
-            <p>This component demonstrates fetching data from the server.</p>
+            <Button onClick={clearFields} className="clearFields">Clear Fields</Button><br/>
             {contents}
             <Pagination
                 current={currentPage}
