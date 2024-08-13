@@ -26,7 +26,7 @@ export default function App() {
     const [pageSize, setPageSize] = useState(10);
     const [totalUsers, setTotalUsers] = useState(0);
     const [visibleActivity, setVisibleActivity] = useState(false);
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: "desc" });
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: "" });
     const [idFilter, setIdFilter] = useState('');
     const [nameFilter, setNameFilter] = useState('');
     const [emailFilter, setEmailFilter] = useState('');
@@ -263,7 +263,7 @@ export default function App() {
         ? <Spin size="large" />
         : filteredUsers.length === 0
             ? <p></p>
-            : <table style={{ marginLeft: 50 }} className="table table-striped" aria-labelledby="tableLabel">
+            : <table className="table table-striped" aria-labelledby="tableLabel">
                 <thead>
                     <tr>
                         <th className="sortButtons" onClick={() => requestSort('id')}>Id</th>
@@ -293,7 +293,7 @@ export default function App() {
         <div>
             <h1 id="tableLabel">User Data</h1>
 
-            <div style={{ marginBottom: 20 }}>
+            <div className="filterInputs">
                 <Input
                     placeholder="Filter by ID"
                     value={idFilter}
@@ -330,7 +330,7 @@ export default function App() {
                 }}
                 showQuickJumper
                 showSizeChanger
-                style={{ marginLeft: 100, marginTop: 50 }}
+                className="paginationPanel"
             />
             <Modal
                 title="Create User"
@@ -339,7 +339,7 @@ export default function App() {
                 onCancel={hideModals}
             >
                 <Input
-                    style={{ marginBottom: 10 }}
+                    className="inputChanger"
                     name="name"
                     value={selectedUser?.name || ''}
                     onChange={handleInputChange}
@@ -363,7 +363,7 @@ export default function App() {
                 onCancel={hideModals}
             >
                 <Input
-                    style={{ marginBottom: 10 }}
+                    className="inputChanger"
                     name="name"
                     value={selectedUser?.name || ''}
                     onChange={handleInputChange}
@@ -390,7 +390,7 @@ export default function App() {
                     value={absenceType}
                     onChange={value => setAbsenceType(value)}
                     placeholder="Select Absence Type"
-                    style={{ width: '100%' }}
+                    className="selectAbsenceType"
                 >
                     <Option value={1}>Illness</Option>
                     <Option value={2}>Vacation</Option>
@@ -400,7 +400,7 @@ export default function App() {
                     value={absenceDescription}
                     onChange={e => setAbsenceDescription(e.target.value)}
                     placeholder="Description"
-                    style={{ marginTop: '10px' }}
+                    className="absenceDescription"
                 />
                 <RangePicker
                     value={[absenceDateFrom ? moment(absenceDateFrom) : null, absenceDateTo ? moment(absenceDateTo) : null]}
@@ -408,7 +408,7 @@ export default function App() {
                         setAbsenceDateFrom(dates ? dates[0].toDate() : null);
                         setAbsenceDateTo(dates ? dates[1].toDate() : null);
                     }}
-                    style={{ marginTop: '10px', width: '100%' }}
+                    className="rangePicker"
                 />
             </Modal>
             <Modal
@@ -425,7 +425,7 @@ export default function App() {
                                 value={absenceType !== null ? absenceType : absence.type}
                                 onChange={value => setAbsenceType(value)}
                                 placeholder="Select Absence Type"
-                                style={{ width: '100%', fontWeight: 'bold' }}
+                                className="absenceSelectType"
                             >
                                 <Option value={1}>Illness</Option>
                                 <Option value={2}>Vacation</Option>
@@ -436,7 +436,7 @@ export default function App() {
                                 value={absenceDescription || absence.description}
                                 onChange={e => setAbsenceDescription(e.target.value)}
                                 placeholder="Description"
-                                style={{ marginTop: '10px', fontWeight: 'bold' }}
+                                className="inputAbsenceDescription"
                             />
                             <RangePicker
                                 disabled
@@ -448,7 +448,7 @@ export default function App() {
                                     setAbsenceDateFrom(dates ? dates[0].toDate() : null);
                                     setAbsenceDateTo(dates ? dates[1].toDate() : null);
                                 }}
-                                style={{ marginTop: '10px', width: '100%' }}
+                                className="absenceRangePicker"
                             />
                             <Button className="removeAbsenceButton" type="primary" onClick={() => removeAbsence(index)} danger >
                                 Remove

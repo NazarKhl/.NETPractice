@@ -110,3 +110,48 @@ th, td {
     font-family: cursive;
     font-weight: bold;
 }
+
+.filterInputs{
+    margin-bottom: 20px;
+}
+
+.paginationPanel{
+    margin-left: 100px;
+    margin-top: 50px;
+}
+
+.table{
+    margin-left: 50px;
+}
+
+.rangePicker{
+    width: 100%;
+    margin-top: 10px;
+}
+
+.inputChanger{
+    margin-bottom: 10px;
+}
+
+.selectAbsenceType{
+    width: 100%;
+}
+
+.absenceDescription{
+    margin-top: 10px;
+}
+
+.absenceSelectType{
+    width: 100%;
+    font-weight: bold;
+}
+
+.inputAbsenceDescription{
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.absenceRangePicker{
+    margin-top: 10px;
+    width: 100%;
+}
