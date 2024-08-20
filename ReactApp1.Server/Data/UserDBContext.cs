@@ -8,6 +8,9 @@ namespace ReactApp1.Server.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Absence> Absences { get; set; }    
+        public DbSet<Address> Address { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Intervention> Intervention { get; set; }
 
         public UserDBContext(DbContextOptions<UserDBContext> options) : base(options)
         {

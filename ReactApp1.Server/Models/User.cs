@@ -8,6 +8,7 @@ namespace ReactApp1.Server.Models
         public bool isActive { get; set; }
 
         public virtual List<Absence> Absences { get; set; } = new List<Absence>();
+        public virtual List<Intervention> Interventions { get; set; } = new List<Intervention>();
     }
 
 }

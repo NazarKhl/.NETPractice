@@ -14,6 +14,11 @@ namespace ReactApp1.Server.Data
                 .WithOne(i => i.User)
                 .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.Interventions)
+                .WithOne(i => i.User)
+                .HasForeignKey(i => i.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
