@@ -27,10 +27,11 @@ namespace ReactApp1.Server.Data
                 .HasForeignKey(i => i.CustomerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(i => i.Addresses)
-                .WithOne(a => a.Intervention)
-                .HasForeignKey(a => a.InterventionId)
-                .OnDelete(DeleteBehavior.Cascade); 
+            builder.HasOne(i => i.Addresses)
+                .WithMany(a => a.Interventions)
+                .HasForeignKey(i => i.AddressId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

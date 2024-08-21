@@ -9,6 +9,9 @@
         public virtual User User { get; set; }
         public int CustomerId { get; set; }
         public virtual Customer Customer { get; set; }
-        public virtual List<Address> Addresses { get; set; } = new List<Address>();
+
+        public int AddressId { get; set; }
+        public virtual Address Addresses { get; set; }
+
     }
 }
