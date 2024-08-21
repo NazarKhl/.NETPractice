@@ -18,10 +18,10 @@ namespace ReactApp1.Server.Data
                 serviceProvider.GetRequiredService<DbContextOptions<UserDBContext>>()))
             {
 
-                if (context.Users.Any())
-                {
-                    return;
-                }
+                //if (context.Users.Any())
+                //{
+                //    return;
+                //}
 
                 var faker = new Faker("pl");
 
@@ -29,7 +29,7 @@ namespace ReactApp1.Server.Data
                 var users = new Faker<User>("pl")
                     .RuleFor(u => u.Name, f => f.Name.FullName())
                     .RuleFor(u => u.Email, f => f.Internet.Email())
-                    .Generate(1);
+                    .Generate(10);
 
                 context.Users.AddRange(users);
                 context.SaveChanges();
@@ -39,7 +39,7 @@ namespace ReactApp1.Server.Data
                     .RuleFor(c => c.NIP, f => f.Random.Number(100000000, 999999999).ToString())
                     .RuleFor(c => c.PhoneNumber, f => f.Random.Int(100000000, 999999999))
                     .RuleFor(c => c.ContactPerson, f => f.Name.FullName())
-                    .Generate(1);
+                    .Generate(10);
 
                 context.Customers.AddRange(customers);
                 context.SaveChanges();
@@ -50,7 +50,7 @@ namespace ReactApp1.Server.Data
                     .RuleFor(a => a.PostalCode, f => f.Address.ZipCode())
                     .RuleFor(a => a.Country, f => f.Address.Country())
                     .RuleFor(i => i.CustomerId, f => f.PickRandom(customers).Id)
-                    .Generate(1);
+                    .Generate(20);
 
                 context.Address.AddRange(addresses);
                 context.SaveChanges();
@@ -61,7 +61,7 @@ namespace ReactApp1.Server.Data
                     .RuleFor(i => i.UserId, f => f.PickRandom(users).Id)
                     .RuleFor(i => i.AddressId, f => f.PickRandom(addresses).Id)
                     .RuleFor(i => i.CustomerId, f => f.PickRandom(customers).Id)
-                    .Generate(1);
+                    .Generate(500);
 
                 context.Intervention.AddRange(interventions);
                 context.SaveChanges();
