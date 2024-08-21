@@ -16,10 +16,11 @@ namespace ReactApp1.Server
             builder.Services.AddDbContext<UserDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("local")));
 
+
             builder.Services.AddScoped(typeof(IRepository<>), typeof(EntityFrameworkRepository<>));
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAbsenceService, AbsenceService>();
-
+            builder.Services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
