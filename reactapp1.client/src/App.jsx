@@ -330,7 +330,7 @@ export default function App() {
                             <td>{user.name}</td>
                             <td>{user.email}</td>
                             <td>
-                                <Button className="viewButton" onClick={() => showUserDetails(user)}>View</Button>
+                                <Button className="viewButton" onClick={() => showUserDetails(user)}>View User Info</Button>
                                 <Button className="addAbsenceButton" onClick={() => showAbsenceModal(user)}>Add Absence</Button>
                                 <Button className="updateButton" onClick={() => showUpdateModal(user)}>Update</Button>
                                 <Button className="showAbsencesButton" onClick={() => showUserAbsences(user)}>Show Absences</Button>
@@ -372,7 +372,7 @@ export default function App() {
             <Button className="downloadJSON" onClick={downloadJSON}>Download .json</Button>
             <Button onClick={showUserActivity} className="userActivityCharrt">User Activity</Button>
             <Button onClick={clearFields} className="clearFields">Clear Fields</Button><br />
-            <Button onClick={showFetchProceduresModal} className="proceduresButton" type="primary">Fetch Procedures</Button>
+            <Button onClick={showFetchProceduresModal} className="proceduresButton" type="primary">Fetch Procedures</Button><br/>
             {contents}
             <Pagination
                 current={currentPage}
@@ -569,13 +569,15 @@ export default function App() {
                 {loadingProcedure ? (
                     <Spin size="large" />
                 ) : (
-                    <ul>
+                    <ol>
                         {procedures.map((procedure, index) => (
                             <li key={index}>
-                                {`UserName: ${procedure.userName}, Description: ${procedure.interventionDescription}`}
+                                <b>UserName:</b> <i>{procedure.userName}</i><br />
+                                <b>Description: </b> <i>{procedure.interventionDescription}</i><br />
+                                <b>Address:</b> <i>{procedure.address}</i>
                             </li>
                         ))}
-                    </ul>
+                    </ol>
                 )}
             </Modal>
         </div>
