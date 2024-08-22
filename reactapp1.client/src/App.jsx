@@ -330,7 +330,7 @@ export default function App() {
                             <td>{user.name}</td>
                             <td>{user.email}</td>
                             <td>
-                                <Button className="viewButton" onClick={() => showUserDetails(user)}>View User Info</Button>
+                                <Button className="viewButton" onClick={() => showUserDetails(user)}>User Details</Button>
                                 <Button className="addAbsenceButton" onClick={() => showAbsenceModal(user)}>Add Absence</Button>
                                 <Button className="updateButton" onClick={() => showUpdateModal(user)}>Update</Button>
                                 <Button className="showAbsencesButton" onClick={() => showUserAbsences(user)}>Show Absences</Button>
@@ -519,7 +519,7 @@ export default function App() {
                 <UserChart users={users} />
             </Modal>
             <Modal
-                title="View User Details"
+                title="User Details"
                 visible={isViewModalOpen}
                 onCancel={hideModals}
                 footer={[

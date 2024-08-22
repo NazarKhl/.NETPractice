@@ -50,7 +50,7 @@ namespace ReactApp1.Server.Data
                     .RuleFor(a => a.PostalCode, f => f.Address.ZipCode())
                     .RuleFor(a => a.Country, f => f.Address.Country())
                     .RuleFor(i => i.CustomerId, f => f.PickRandom(customers).Id)
-                    .Generate(0);
+                    .Generate(10);
 
                 context.Address.AddRange(addresses);
                 context.SaveChanges();
