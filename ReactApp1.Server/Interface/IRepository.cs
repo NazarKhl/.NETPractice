@@ -1,6 +1,6 @@
 ﻿namespace ReactApp1.Server.Interface
 {
-    public interface IRepository<T> where T : IModelClass
+    public interface IRepository<T> 
     {
         T GetById(int id);
         IQueryable<T> GetAll();

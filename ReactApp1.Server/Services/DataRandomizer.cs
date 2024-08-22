@@ -29,7 +29,7 @@ namespace ReactApp1.Server.Data
                 var users = new Faker<User>("pl")
                     .RuleFor(u => u.Name, f => f.Name.FullName())
                     .RuleFor(u => u.Email, f => f.Internet.Email())
-                    .Generate(10);
+                    .Generate(0);
 
                 context.Users.AddRange(users);
                 context.SaveChanges();
@@ -39,7 +39,7 @@ namespace ReactApp1.Server.Data
                     .RuleFor(c => c.NIP, f => f.Random.Number(100000000, 999999999).ToString())
                     .RuleFor(c => c.PhoneNumber, f => f.Random.Int(100000000, 999999999))
                     .RuleFor(c => c.ContactPerson, f => f.Name.FullName())
-                    .Generate(10);
+                    .Generate(0);
 
                 context.Customers.AddRange(customers);
                 context.SaveChanges();
@@ -50,7 +50,7 @@ namespace ReactApp1.Server.Data
                     .RuleFor(a => a.PostalCode, f => f.Address.ZipCode())
                     .RuleFor(a => a.Country, f => f.Address.Country())
                     .RuleFor(i => i.CustomerId, f => f.PickRandom(customers).Id)
-                    .Generate(20);
+                    .Generate(0);
 
                 context.Address.AddRange(addresses);
                 context.SaveChanges();
@@ -61,7 +61,7 @@ namespace ReactApp1.Server.Data
                     .RuleFor(i => i.UserId, f => f.PickRandom(users).Id)
                     .RuleFor(i => i.AddressId, f => f.PickRandom(addresses).Id)
                     .RuleFor(i => i.CustomerId, f => f.PickRandom(customers).Id)
-                    .Generate(500);
+                    .Generate(0);
 
                 context.Intervention.AddRange(interventions);
                 context.SaveChanges();

@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ReactApp1.Server.DTOs;
 using ReactApp1.Server.Interface;
-using ReactApp1.Server.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ReactApp1.Server.Controllers
 {
@@ -12,40 +9,20 @@ namespace ReactApp1.Server.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IReadRepository<User> _userRepository;
 
-        public UserController(IUserService userService, IReadRepository<User> userRepository)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _userRepository = userRepository;
         }
 
-        [HttpGet("{id:int}/read")]
-        public async Task<ActionResult<User>> GetUserReadOnly(int id)
-        {
-            var user = await _userRepository.GetByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return Ok(user);
-        }
-
-        [HttpGet("read-all")]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsersReadOnly()
-        {
-            var users = await _userRepository.GetAllAsync();
-            return Ok(users);
-        }
-
-        [HttpGet("all")]
+        [HttpGet]
         public IActionResult GetAll()
         {
             var users = _userService.GetAll();
             return Ok(users);
         }
 
-        [HttpGet("user/{id}")]
+        [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
             var user = _userService.Get(id);
@@ -68,11 +45,12 @@ namespace ReactApp1.Server.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] UserUpdateDTO userDTO)
+        public IActionResult Put([FromBody] UserUpdateDTO userDTO)
         {
             _userService.Update(userDTO);
             return NoContent();
         }
+
 
         [HttpGet("active")]
         public IActionResult GetActiveUsers()
