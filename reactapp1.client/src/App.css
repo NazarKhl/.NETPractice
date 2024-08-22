@@ -30,11 +30,11 @@ th, td {
 }
 
 .showUsers {
-    width: 540px;
-    margin-top: 1px;
+    width: 390px;
+    margin-top: 0px;
     padding: 10px;
     font-weight: bold;
-    margin-left: 10px;
+    margin-left: 40px;
     font-family: cursive;
     transition: 0.5s;
 }
@@ -116,7 +116,7 @@ th, td {
 }
 
 .paginationPanel{
-    margin-left: 300px;
+    margin-left: 170px;
     margin-top: 50px;
 }
 
@@ -182,3 +182,149 @@ th, td {
     width: 350px;
     margin-top: 10px;
 }
+.actionButtons {
+    margin-top: 10px;
+    font-weight: bold;
+    font-family: cursive;
+}
+
+.topButtonsAction {
+    width: 390px;
+    margin-left: 25px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-family: cursive;
+}
+
+.buttonHover:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.buttonActive:active {
+    background-color: #d0d0d0;
+}
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-top: 60px;
+}
+
+.modalContent {
+    background-color: #fff;
+    margin: 5% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    border-radius: 10px;
+}
+
+
+.inputFocus:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.inputError {
+    border-color: #ff4d4d;
+    background-color: #ffe6e6;
+}
+
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%; 
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+.card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-family: cursive;
+}
+
+.cardBody {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+
+@media (max-width: 768px) {
+    .topButtonsAction {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .paginationPanel {
+        margin-left: 0;
+        text-align: center;
+    }
+
+    .filterFields {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .table {
+        margin-left: 0;
+    }
+}
+
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 6px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }

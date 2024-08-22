@@ -36,8 +36,10 @@ export default function App() {
     const [customerId, setCustomerId] = useState('');
     const [loadingProcedure, setLoadingProcedure] = useState(false);
     const [isProceduresModalOpen, setIsProceduresModalOpen] = useState(false);
-
+    const [interventionData, setInterventionData] = useState([]);
     const [isFetchProceduresModalOpen, setIsFetchProceduresModalOpen] = useState(false);
+    const [visibleButtons, setVisibleButtons] = useState({});
+    const [isTopButtonsVisible, setIsTopButtonsVisible] = useState(false);
 
     useEffect(() => {
         showUsers(currentPage);
@@ -57,6 +59,18 @@ export default function App() {
             setLoading(false);
         }
     };
+
+    const toggleButtons = (userId) => {
+        setVisibleButtons(prevState => ({
+            ...prevState,
+            [userId]: !prevState[userId],
+        }));
+    };
+
+    const toggleTopButtonsVisibility = () => {
+        setIsTopButtonsVisible(!isTopButtonsVisible);
+    };
+
 
     const showFetchProceduresModal = () => {
         setIsFetchProceduresModalOpen(true);
@@ -158,10 +172,21 @@ export default function App() {
         setIsViewModelOpen(false);
     };
 
-    const showUserDetails = (user) => {
+    const showUserDetails = async (user) => {
         setSelectedUser(user);
+        try {
+            const response = await fetch(`/api/MonthlyIntervention/GetAllView?userId=${user.id}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch intervention data');
+            }
+            const data = await response.json();
+            setInterventionData(data);
+        } catch (error) {
+            notification.error({ message: 'Error fetching intervention data', description: error.message });
+        }
         setIsViewModelOpen(true);
     }
+
 
     const handleCreateUser = async () => {
         try {
@@ -323,18 +348,25 @@ export default function App() {
                         <th>Action buttons</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody >
                     {filteredUsers.map(user =>
                         <tr key={user.id}>
                             <td>{user.id}</td>
                             <td>{user.name}</td>
                             <td>{user.email}</td>
                             <td>
-                                <Button className="viewButton" onClick={() => showUserDetails(user)}>User Details</Button>
-                                <Button className="addAbsenceButton" onClick={() => showAbsenceModal(user)}>Add Absence</Button>
-                                <Button className="updateButton" onClick={() => showUpdateModal(user)}>Update</Button>
-                                <Button className="showAbsencesButton" onClick={() => showUserAbsences(user)}>Show Absences</Button>
-                                <Button type="primary" className="deleteButton" onClick={() => handleDelete(user.id)} danger>Delete</Button>
+                                <Button className="actionButtons" onClick={() => toggleButtons(user.id)}>
+                                    {visibleButtons[user.id] ? 'Hide Actions' : 'Show Actions' }
+                                </Button>
+                                {visibleButtons[user.id] && (
+                                    <div className="actionButtons">
+                                        <Button className="viewButton" onClick={() => showUserDetails(user)}>User Details</Button>
+                                        <Button className="updateButton" onClick={() => showUpdateModal(user)}>Update</Button>
+                                        <Button className="showAbsencesButton" onClick={() => showUserAbsences(user)}>Show Absences</Button>
+                                        <Button className="addAbsenceButton" onClick={() => showAbsenceModal(user)}>Add Absence</Button>
+                                        <Button type="primary" className="deleteButton" onClick={() => handleDelete(user.id)} danger>Delete</Button>
+                                    </div>
+                                )}
                             </td>
                         </tr>
                     )}
@@ -367,12 +399,19 @@ export default function App() {
                     className="filterFields"
                 /><br/>
             </div>
-            <Button onClick={() => showUsers(currentPage)} className="showUsers">Show users</Button><br/>
-            <Button onClick={showCreateModal} className="createUser">Create New User</Button>
-            <Button className="downloadJSON" onClick={downloadJSON}>Download .json</Button>
-            <Button onClick={showUserActivity} className="userActivityCharrt">User Activity</Button>
-            <Button onClick={clearFields} className="clearFields">Clear Fields</Button><br />
-            <Button onClick={showFetchProceduresModal} className="proceduresButton" type="primary">Fetch Procedures</Button><br/>
+            <Button onClick={() => showUsers(currentPage)} className="showUsers">Show users</Button>
+            <Button className="topButtonsAction" onClick={toggleTopButtonsVisibility}>
+                {isTopButtonsVisible ? 'Hide Actions' : 'Show Actions'}
+            </Button><br/>
+            {isTopButtonsVisible && (
+                <>
+                    <Button onClick={showCreateModal} className="createUser">Create New User</Button>
+                    <Button className="downloadJSON" onClick={downloadJSON}>Download .json</Button>
+                    <Button onClick={showUserActivity} className="userActivityCharrt">User Activity</Button>
+                    <Button onClick={clearFields} className="clearFields">Clear Fields</Button><br />
+                    <Button onClick={showFetchProceduresModal} className="proceduresButton" type="primary">Fetch Procedures</Button><br/>
+                </>
+            )}
             {contents}
             <Pagination
                 current={currentPage}
@@ -538,7 +577,16 @@ export default function App() {
                         </li>
                     ))}
                 </ul>
-            </Modal>
+                <p><strong>Interventions:</strong></p>
+                <ul>
+                    {interventionData.map((intervention, index) => (
+                        <li key={index}>
+                            <b>Date:</b> {moment(intervention.date).format('YYYY-MM-DD')}<br />
+                            <b>Address:</b> {intervention.address}
+                        </li>
+                    ))}
+                </ul>
+                </Modal>
             <Modal
                 title="Fetch Procedures"
                 visible={isFetchProceduresModalOpen}
