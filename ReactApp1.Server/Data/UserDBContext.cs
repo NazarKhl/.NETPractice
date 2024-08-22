@@ -7,11 +7,12 @@ namespace ReactApp1.Server.Data
     public class UserDBContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<Absence> Absences { get; set; }    
+        public DbSet<Absence> Absences { get; set; }
         public DbSet<Address> Address { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Intervention> Intervention { get; set; }
         public DbSet<MonthlyInterventionModel> MonthlyInterventions { get; set; }
+        public DbSet<ProcedureInterventionModel> InterventionModels { get; set; }
 
         public UserDBContext(DbContextOptions<UserDBContext> options) : base(options)
         {
@@ -23,10 +24,13 @@ namespace ReactApp1.Server.Data
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             modelBuilder.Entity<MonthlyInterventionModel>(entity =>
             {
-                entity.HasNoKey(); 
+                entity.HasNoKey();
                 entity.ToView("MonthlyInterventions");
             });
+
+            modelBuilder.Entity<ProcedureInterventionModel>()
+             .HasNoKey()
+             .ToTable((string)null);
         }
     }
 }
-

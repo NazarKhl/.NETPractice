@@ -21,7 +21,7 @@ namespace ReactApp1.Server.Controllers
             var interventions = _readRepository.GetAll().ToList();
             return Ok(interventions);
         }
-        [HttpGet("GetByIdView{id}")]
+        [HttpGet("GetViewById{id}")]
         public IActionResult Get(int id)
         {
             var interventions = _readRepository.GetById(id);

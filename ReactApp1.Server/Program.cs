@@ -19,12 +19,16 @@ namespace ReactApp1.Server
 
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(EntityFrameworkRepository<>));
+            builder.Services.AddScoped<IReadRepository<MonthlyInterventionModel>, MonthlyInterventionReadRepository>();
+            builder.Services.AddScoped<IProcedureInterventionRepository<ProcedureInterventionModel>, ProcedureInterventionReadRepository>();
+
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAbsenceService, AbsenceService>();
-            builder.Services.AddScoped<IReadRepository<MonthlyInterventionModel>, MonthlyInterventionReadRepository>();
 
             builder.Services.AddControllers();
+
             builder.Services.AddEndpointsApiExplorer();
+            
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
