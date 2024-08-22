@@ -4,6 +4,7 @@ using ReactApp1.Server.Interface;
 using ReactApp1.Service;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using ReactApp1.Server.Models;
 
 namespace ReactApp1.Server
 {
@@ -20,6 +21,8 @@ namespace ReactApp1.Server
             builder.Services.AddScoped(typeof(IRepository<>), typeof(EntityFrameworkRepository<>));
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAbsenceService, AbsenceService>();
+            builder.Services.AddScoped<IReadRepository<MonthlyInterventionModel>, MonthlyInterventionReadRepository>();
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

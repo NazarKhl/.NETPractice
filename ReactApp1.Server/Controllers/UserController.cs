@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ReactApp1.Server.DTOs;
 using ReactApp1.Server.Interface;
+using ReactApp1.Server.Models;
 
 namespace ReactApp1.Server.Controllers
 {
@@ -10,9 +11,9 @@ namespace ReactApp1.Server.Controllers
     {
         private readonly IUserService _userService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IReadRepository<MonthlyInterventionModel> readRepository)
         {
-            _userService = userService;
+            _userService = userService; 
         }
 
         [HttpGet]

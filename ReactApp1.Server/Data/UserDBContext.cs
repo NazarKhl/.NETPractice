@@ -11,7 +11,7 @@ namespace ReactApp1.Server.Data
         public DbSet<Address> Address { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Intervention> Intervention { get; set; }
-        public DbSet<MonthlyIntervention> MonthlyInterventions { get; set; }
+        public DbSet<MonthlyInterventionModel> MonthlyInterventions { get; set; }
 
         public UserDBContext(DbContextOptions<UserDBContext> options) : base(options)
         {
@@ -21,7 +21,7 @@ namespace ReactApp1.Server.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            modelBuilder.Entity<MonthlyIntervention>(entity =>
+            modelBuilder.Entity<MonthlyInterventionModel>(entity =>
             {
                 entity.HasNoKey(); 
                 entity.ToView("MonthlyInterventions");
