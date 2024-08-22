@@ -31,6 +31,13 @@ export default function App() {
     const [nameFilter, setNameFilter] = useState('');
     const [emailFilter, setEmailFilter] = useState('');
     const [isViewModalOpen, setIsViewModelOpen] = useState(false);
+    const [procedures, setProcedures] = useState([]);
+    const [procedureDate, setProcedureDate] = useState('');
+    const [customerId, setCustomerId] = useState('');
+    const [loadingProcedure, setLoadingProcedure] = useState(false);
+    const [isProceduresModalOpen, setIsProceduresModalOpen] = useState(false);
+
+    const [isFetchProceduresModalOpen, setIsFetchProceduresModalOpen] = useState(false);
 
     useEffect(() => {
         showUsers(currentPage);
@@ -51,6 +58,44 @@ export default function App() {
         }
     };
 
+    const showFetchProceduresModal = () => {
+        setIsFetchProceduresModalOpen(true);
+    };
+
+    const hideFetchProceduresModal = () => {
+        setIsFetchProceduresModalOpen(false);
+        setCustomerId('');
+        setProcedureDate('');
+        setProcedures([]);
+    };
+
+    const handleFetchProcedures = async () => {
+        if (!customerId || !procedureDate) {
+            notification.error({ message: 'Please enter correct information' });
+            return;
+        }
+        setLoadingProcedure(true);
+        try {
+            const response = await fetch(`/api/ProcedureIntervention/GetAllProcedure?customerId=${customerId}&date=${procedureDate}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch procedures');
+            }
+            const data = await response.json();
+            setProcedures(data);
+            if (data.length > 0) {
+                setIsFetchProceduresModalOpen(false);
+                setIsProceduresModalOpen(true);
+            } else {
+                notification.info({ message: 'No procedures found' });
+                setIsFetchProceduresModalOpen(false);
+            }
+        } catch (error) {
+            notification.error({ message: 'Error fetching procedures', description: error.message });
+            setIsFetchProceduresModalOpen(false);
+        } finally {
+            setLoadingProcedure(false);
+        }
+    };
 
     const handleIdFiterChange = (e) => {
   
@@ -302,6 +347,7 @@ export default function App() {
             <h1 id="tableLabel">User Data</h1>
 
             <div className="filterInputs">
+
                 <Input
                     placeholder="Filter by ID"
                     value={idFilter}
@@ -319,9 +365,9 @@ export default function App() {
                     value={emailFilter}
                     onChange={handleEmailFilterChange}
                     className="filterFields"
-                />
+                /><br/>
             </div>
-
+            <Button onClick={showFetchProceduresModal} className="proceduresButton" type="primary">Fetch Procedures</Button><br />
             <Button onClick={() => showUsers(currentPage)} className="showUsers">Show users</Button><br/>
             <Button onClick={showCreateModal} className="createUser">Create New User</Button>
             <Button className="downloadJSON" onClick={downloadJSON}>Download .json</Button>
@@ -493,7 +539,45 @@ export default function App() {
                     ))}
                 </ul>
             </Modal>
-
+            <Modal
+                title="Fetch Procedures"
+                visible={isFetchProceduresModalOpen}
+                onOk={handleFetchProcedures}
+                onCancel={hideFetchProceduresModal}
+            >
+                <Input
+                    placeholder="Customer ID"
+                    value={customerId}
+                    onChange={e => setCustomerId(e.target.value)}
+                    className="procedureId"
+                />
+                <Input
+                    placeholder="Date (YYYY-MM)"
+                    value={procedureDate}
+                    onChange={e => setProcedureDate(e.target.value)}
+                    className="procedureDate"
+                />
+            </Modal>
+            <Modal
+                title="Procedures"
+                visible={isProceduresModalOpen}
+                onCancel={() => setIsProceduresModalOpen(false)}
+                footer={[
+                    <Button key="close" onClick={() => setIsProceduresModalOpen(false)}>Close</Button>,
+                ]}
+            >
+                {loadingProcedure ? (
+                    <Spin size="large" />
+                ) : (
+                    <ul>
+                        {procedures.map((procedure, index) => (
+                            <li key={index}>
+                                {`UserName: ${procedure.userName}, Description: ${procedure.interventionDescription}`}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </Modal>
         </div>
     );
 }

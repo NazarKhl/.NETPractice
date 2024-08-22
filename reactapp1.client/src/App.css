@@ -161,3 +161,23 @@ th, td {
     font-weight: bold;
     font-family: cursive;
 }
+
+.proceduresButton {
+    width: 540px;
+    padding: 10px;
+    font-weight: bold;
+    margin-left: 10px;
+    font-family: cursive;
+    transition: 0.5s;
+}
+
+.procedureId {
+    margin-left: 10px;
+    width: 350px;
+}
+
+.procedureDate {
+    margin-left: 10px;
+    width: 350px;
+    margin-top: 10px;
+}
