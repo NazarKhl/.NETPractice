@@ -367,12 +367,12 @@ export default function App() {
                     className="filterFields"
                 /><br/>
             </div>
-            <Button onClick={showFetchProceduresModal} className="proceduresButton" type="primary">Fetch Procedures</Button><br />
             <Button onClick={() => showUsers(currentPage)} className="showUsers">Show users</Button><br/>
             <Button onClick={showCreateModal} className="createUser">Create New User</Button>
             <Button className="downloadJSON" onClick={downloadJSON}>Download .json</Button>
             <Button onClick={showUserActivity} className="userActivityCharrt">User Activity</Button>
-            <Button onClick={clearFields} className="clearFields">Clear Fields</Button><br/>
+            <Button onClick={clearFields} className="clearFields">Clear Fields</Button><br />
+            <Button onClick={showFetchProceduresModal} className="proceduresButton" type="primary">Fetch Procedures</Button>
             {contents}
             <Pagination
                 current={currentPage}

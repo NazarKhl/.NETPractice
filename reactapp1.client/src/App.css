@@ -31,7 +31,7 @@ th, td {
 
 .showUsers {
     width: 540px;
-    margin-top: 13px;
+    margin-top: 1px;
     padding: 10px;
     font-weight: bold;
     margin-left: 10px;
@@ -106,7 +106,7 @@ th, td {
 .clearFields {
     margin-top: 20px;
     margin-left: 10px;
-    margin-bottom: 40px;
+    margin-bottom: 10px;
     font-family: cursive;
     font-weight: bold;
 }
@@ -167,6 +167,7 @@ th, td {
     padding: 10px;
     font-weight: bold;
     margin-left: 10px;
+    margin-bottom: 20px;
     font-family: cursive;
     transition: 0.5s;
 }
