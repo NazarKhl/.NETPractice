@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Interface;
+using ReactApp1.Server.Models.Abstractions;
 
 namespace ReactApp1.Server.Data
 {
-    public class EntityFrameworkRepository<T> : IRepository<T> where T : class
+    public class EntityFrameworkRepository<T> : IRepository<T> where T : class //, IEntity
     {
         private readonly UserDBContext _dbContext;
         private readonly DbSet<T> _dbSet;

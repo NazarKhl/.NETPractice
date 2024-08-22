@@ -1,6 +1,8 @@
-﻿namespace ReactApp1.Server.Models
+﻿using ReactApp1.Server.Models.Abstractions;
+
+namespace ReactApp1.Server.Models
 {
-    public class Address
+    public class Address //: IEntity
     {
         public int Id { get; set; }
         public string Street { get; set; }

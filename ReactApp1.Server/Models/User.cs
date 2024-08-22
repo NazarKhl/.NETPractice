@@ -1,6 +1,8 @@
+using ReactApp1.Server.Models.Abstractions;
+
 namespace ReactApp1.Server.Models
 {
-    public class User
+    public class User : IEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }

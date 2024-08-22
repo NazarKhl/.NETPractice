@@ -1,6 +1,8 @@
-﻿namespace ReactApp1.Server.Models
+﻿using ReactApp1.Server.Models.Abstractions;
+
+namespace ReactApp1.Server.Models
 {
-    public class Intervention
+    public class Intervention// : IEntity
     {
         public int Id { get; set; }
         public string Description { get; set; }

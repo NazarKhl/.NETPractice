@@ -1,6 +1,8 @@
-﻿namespace ReactApp1.Server.Models
+﻿using ReactApp1.Server.Models.Abstractions;
+
+namespace ReactApp1.Server.Models
 {
-    public class Absence
+    public class Absence //: IEntity
     {
         public int Id { get; set; }
         public int UserId { get; set; }

@@ -155,3 +155,9 @@ th, td {
     margin-top: 10px;
     width: 100%;
 }
+
+.viewButton{
+    margin-right: 10px;
+    font-weight: bold;
+    font-family: cursive;
+}

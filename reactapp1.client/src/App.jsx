@@ -30,7 +30,7 @@ export default function App() {
     const [idFilter, setIdFilter] = useState('');
     const [nameFilter, setNameFilter] = useState('');
     const [emailFilter, setEmailFilter] = useState('');
-
+    const [isViewModalOpen, setIsViewModelOpen] = useState(false);
 
     useEffect(() => {
         showUsers(currentPage);
@@ -110,7 +110,13 @@ export default function App() {
         setIsShowAbsencesModalOpen(false);
         setVisibleActivity(false);
         setSelectedUser(null);
+        setIsViewModelOpen(false);
     };
+
+    const showUserDetails = (user) => {
+        setSelectedUser(user);
+        setIsViewModelOpen(true);
+    }
 
     const handleCreateUser = async () => {
         try {
@@ -279,6 +285,7 @@ export default function App() {
                             <td>{user.name}</td>
                             <td>{user.email}</td>
                             <td>
+                                <Button className="viewButton" onClick={() => showUserDetails(user)}>View</Button>
                                 <Button className="addAbsenceButton" onClick={() => showAbsenceModal(user)}>Add Absence</Button>
                                 <Button className="updateButton" onClick={() => showUpdateModal(user)}>Update</Button>
                                 <Button className="showAbsencesButton" onClick={() => showUserAbsences(user)}>Show Absences</Button>
@@ -287,6 +294,7 @@ export default function App() {
                         </tr>
                     )}
                 </tbody>
+
             </table>;
 
     return (
@@ -464,6 +472,28 @@ export default function App() {
             >
                 <UserChart users={users} />
             </Modal>
+            <Modal
+                title="View User Details"
+                visible={isViewModalOpen}
+                onCancel={hideModals}
+                footer={[
+                    <Button key="close" onClick={hideModals}>Close</Button>,
+                ]}
+            >
+                <p><strong>ID:</strong> {selectedUser?.id}</p>
+                <p><strong>Name:</strong> {selectedUser?.name}</p>
+                <p><strong>Email:</strong> {selectedUser?.email}</p>
+                <p><strong>Active:</strong> {selectedUser?.isActive ? 'Yes' : 'No'}</p>
+                <p><strong>Absences:</strong></p>
+                <ul>
+                    {selectedUser?.absences?.map((absence, index) => (
+                        <li key={index}>
+                            {absenceTypeLabels[absence.type]} from {moment(absence.dateFrom).format('YYYY-MM-DD')} to {moment(absence.dateTo).format('YYYY-MM-DD')}: {absence.description}
+                        </li>
+                    ))}
+                </ul>
+            </Modal>
+
         </div>
     );
 }

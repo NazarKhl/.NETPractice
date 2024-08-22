@@ -1,8 +1,9 @@
-﻿using System.Net;
+﻿using ReactApp1.Server.Models.Abstractions;
+using System.Net;
 
 namespace ReactApp1.Server.Models
 {
-    public class Customer
+    public class Customer // : IEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
