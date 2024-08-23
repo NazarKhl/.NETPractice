@@ -3,6 +3,7 @@
     public class HoursInterventionModel
     {
         public int UserId { get; set; }
+        public int CustomerId { get; set; }
         public DateTime Date { get; set; }
         public decimal TotalHoursOfWork { get; set; }
     }

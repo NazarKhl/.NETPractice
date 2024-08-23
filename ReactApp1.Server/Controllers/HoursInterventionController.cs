@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Interface;
 using ReactApp1.Server.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ReactApp1.Server.Controllers
 {
@@ -21,10 +18,20 @@ namespace ReactApp1.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HoursInterventionModel>>> GetHoursInterventions(int userId, DateTime yearMonth)
+        public IActionResult GetAll([FromQuery] int? userId, [FromQuery] int? customerId, [FromQuery] string yearMonth)
         {
-            var interventions = _repository.GetAll(userId, yearMonth);
-            return Ok(await interventions.ToListAsync());
+            DateTime? parsedDate = null;
+            if (!string.IsNullOrEmpty(yearMonth))
+            {
+                if (!DateTime.TryParse(yearMonth, out DateTime tempDate))
+                {
+                    return BadRequest("Invalid date format");
+                }
+                parsedDate = tempDate;
+            }
+
+            var interventions = _repository.GetAll(userId, customerId, parsedDate).ToList();
+            return Ok(interventions);
         }
 
         [HttpGet("{id}")]

@@ -1,42 +1,34 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Data;
-using ReactApp1.Server.Interface;
 using ReactApp1.Server.Models;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace ReactApp1.Server.Data
+namespace ReactApp1.Server.Interface
 {
     public class HoursInterventionRepository : IHoursInterventionRepository<HoursInterventionModel>
     {
-        private readonly UserDBContext _context;
+        private readonly UserDBContext _userDBContext;
 
-        public HoursInterventionRepository(UserDBContext context)
+        public HoursInterventionRepository(UserDBContext userDBContext)
         {
-            _context = context;
+            _userDBContext = userDBContext;
         }
 
         public HoursInterventionModel GetById(int id)
         {
-
-            return _context.HoursInterventionModels
-                .SingleOrDefault(e => e.UserId == id);
+            return _userDBContext.HoursInterventionModels
+                .FromSqlInterpolated($"EXEC dbo.GetTotalHoursOfWork @UserId = {id}, @CustomerId = NULL, @YearMonth = NULL")
+                .AsEnumerable()
+                .FirstOrDefault();
         }
 
-        public IQueryable<HoursInterventionModel> GetAll(int userId, DateTime yearMonth)
+        public IQueryable<HoursInterventionModel> GetAll(int? userId, int? customerId, DateTime? yearMonth)
         {
-            var startDate = new DateTime(yearMonth.Year, yearMonth.Month, 1);
-            var endDate = startDate.AddMonths(1);
+            var yearMonthStr = yearMonth?.ToString("yyyy-MM") ?? null;
 
-            return _context.Intervention
-                .Where(i => i.UserId == userId && i.Date >= startDate && i.Date < endDate)
-                .GroupBy(i => new { i.UserId })
-                .Select(g => new HoursInterventionModel
-                {
-                    UserId = g.Key.UserId,
-                    TotalHoursOfWork = g.Sum(i => i.HoursOfWork)
-                })
+            return _userDBContext.HoursInterventionModels
+                .FromSqlInterpolated($"EXEC dbo.GetTotalHoursOfWork @UserId = {userId}, @CustomerId = {customerId}, @YearMonth = {yearMonthStr}")
                 .AsQueryable();
         }
     }
