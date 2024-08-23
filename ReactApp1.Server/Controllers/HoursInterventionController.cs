@@ -18,12 +18,12 @@ namespace ReactApp1.Server.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] int? userId, [FromQuery] int? customerId, [FromQuery] string yearMonth)
+        public IActionResult GetAll([FromQuery] int? userId, [FromQuery] int? customerId, [FromQuery] string date)
         {
             DateTime? parsedDate = null;
-            if (!string.IsNullOrEmpty(yearMonth))
+            if (!string.IsNullOrEmpty(date))
             {
-                if (!DateTime.TryParse(yearMonth, out DateTime tempDate))
+                if (!DateTime.TryParse(date, out DateTime tempDate))
                 {
                     return BadRequest("Invalid date format");
                 }

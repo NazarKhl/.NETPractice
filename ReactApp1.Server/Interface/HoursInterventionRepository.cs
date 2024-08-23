@@ -18,17 +18,17 @@ namespace ReactApp1.Server.Interface
         public HoursInterventionModel GetById(int id)
         {
             return _userDBContext.HoursInterventionModels
-                .FromSqlInterpolated($"EXEC dbo.GetTotalHoursOfWork @UserId = {id}, @CustomerId = NULL, @YearMonth = NULL")
+                .FromSqlInterpolated($"EXEC dbo.GetTotalHou @UserId = {id}, @CustomerId = NULL, @YearMonth = NULL")
                 .AsEnumerable()
                 .FirstOrDefault();
         }
 
-        public IQueryable<HoursInterventionModel> GetAll(int? userId, int? customerId, DateTime? yearMonth)
+        public IQueryable<HoursInterventionModel> GetAll(int? userId, int? customerId, DateTime? date)
         {
-            var yearMonthStr = yearMonth?.ToString("yyyy-MM") ?? null;
+            var yearMonthStr = date?.ToString("yyyy-MM") ?? null;
 
             return _userDBContext.HoursInterventionModels
-                .FromSqlInterpolated($"EXEC dbo.GetTotalHoursOfWork @UserId = {userId}, @CustomerId = {customerId}, @YearMonth = {yearMonthStr}")
+                .FromSqlInterpolated($"EXEC dbo.GetTotalHou @UserId = {userId}, @CustomerId = {customerId}, @YearMonth = {yearMonthStr}")
                 .AsQueryable();
         }
     }

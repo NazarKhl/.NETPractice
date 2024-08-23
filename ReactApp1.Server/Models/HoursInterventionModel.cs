@@ -5,6 +5,6 @@
         public int UserId { get; set; }
         public int CustomerId { get; set; }
         public DateTime Date { get; set; }
-        public decimal TotalHoursOfWork { get; set; }
+        public int TotalHoursOfWork { get; set; }
     }
 }

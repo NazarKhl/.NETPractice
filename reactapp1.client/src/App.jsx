@@ -212,6 +212,20 @@ export default function App() {
         setIsViewModelOpen(true);
     }
 
+    const showTotalHouresOfWork = async () => {
+        
+        try {
+            const response = await fetch(`/api/HoursIntervention?userId=1&customerId=9&date=2023-10`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch intervention data');
+            }
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            notification.error({ message: 'Error fetching intervention data', description: error.message });
+        }
+    }
+
 
     const handleCreateUser = async () => {
         try {
@@ -672,6 +686,7 @@ export default function App() {
                     </ol>
                 )}
             </Modal>
+            <button onClick={showTotalHouresOfWork}>Show</button>
             </div>
     );
 }
