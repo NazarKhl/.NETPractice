@@ -335,8 +335,8 @@ th, td {
 .table-container {
     display: flex;
     justify-content: center;
-    margin: 20px;
-    padding: 0px 180px 0px 180px
+    margin: 0px;
+    padding: 0px 150px 0px 180px
 }
 
 .table {

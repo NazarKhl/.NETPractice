@@ -2,7 +2,7 @@
 
 namespace ReactApp1.Server.Interface
 {
-    public interface IProcedureInterventionRepository<T> where T : class //, IEntity
+    public interface IProcedureInterventionRepository<T> where T : class 
     {
         T GetById(int id);
         IQueryable<T> GetAll(int customerId, DateTime date);

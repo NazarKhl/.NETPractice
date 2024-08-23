@@ -623,8 +623,10 @@ export default function App() {
                 <ul>
                     {interventionData.map((intervention, index) => (
                         <li key={index}>
+                            <b>Customer Name:</b> {intervention.customerName}<br />
                             <b>Date:</b> {moment(intervention.date).format('YYYY-MM-DD')}<br />
-                            <b>Address:</b> {intervention.address}
+                            <b>Address:</b> {intervention.address}<br/>
+                            <b>Description:</b> {intervention.interventionDescription}
                         </li>
                     ))}
                 </ul>

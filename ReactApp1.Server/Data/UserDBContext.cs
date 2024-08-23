@@ -12,25 +12,34 @@ namespace ReactApp1.Server.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Intervention> Intervention { get; set; }
         public DbSet<MonthlyInterventionModel> MonthlyInterventions { get; set; }
-        public DbSet<ProcedureInterventionModel> InterventionModels { get; set; }
+        public DbSet<ProcedureInterventionModel> ProcedureInterventions { get; set; }
+        public DbSet<HoursInterventionModel> HoursInterventionModels { get; set; }
 
         public UserDBContext(DbContextOptions<UserDBContext> options) : base(options)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
             modelBuilder.Entity<MonthlyInterventionModel>(entity =>
             {
                 entity.HasNoKey();
                 entity.ToView("MonthlyInterventions");
             });
 
-            modelBuilder.Entity<ProcedureInterventionModel>()
-             .HasNoKey()
-             .ToTable((string)null);
+            modelBuilder.Entity<ProcedureInterventionModel>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToTable((string)null);
+            });
+
+            modelBuilder.Entity<HoursInterventionModel>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToTable((string)null);
+            });
         }
     }
 }

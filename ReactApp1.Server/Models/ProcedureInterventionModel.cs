@@ -2,7 +2,7 @@
 {
     public class ProcedureInterventionModel
     {
-        public int InterventioId { get; set; }
+        public int InterventionId { get; set; }
         public string InterventionDescription { get; set; }
         public DateTime Date { get; set; }
         public string UserName { get; set; }

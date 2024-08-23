@@ -16,16 +16,16 @@ namespace ReactApp1.Server.Interface
 
         public ProcedureInterventionModel GetById(int id)
         {
-            return _userDBContext.InterventionModels
-                .FromSqlInterpolated($"EXEC dbo.GetInfoByCustomerDate @CustomerId = {id}, @Date = {DateTime.Now:yyyy-MM-dd}")
+            return _userDBContext.ProcedureInterventions
+                .FromSqlInterpolated($"EXEC dbo.GetInterventionsForCustomer @CustomerId = {id}, @Date = {DateTime.Now:yyyy-MM-dd}")
                 .AsEnumerable()
                 .FirstOrDefault();
         }
 
         public IQueryable<ProcedureInterventionModel> GetAll(int customerId, DateTime date)
         {
-            return _userDBContext.InterventionModels
-                .FromSqlInterpolated($"EXEC dbo.GetInfoByCustomerDate @CustomerId = {customerId}, @Date = {date:yyyy-MM-dd}")
+            return _userDBContext.ProcedureInterventions
+                .FromSqlInterpolated($"EXEC dbo.GetInterventionsForCustomer @CustomerId = {customerId}, @Date = {date:yyyy-MM-dd}")
                 .AsQueryable();
         }
     }

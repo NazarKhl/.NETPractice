@@ -61,6 +61,7 @@ namespace ReactApp1.Server.Data
                     .RuleFor(i => i.UserId, f => f.PickRandom(users).Id)
                     .RuleFor(i => i.AddressId, f => f.PickRandom(addresses).Id)
                     .RuleFor(i => i.CustomerId, f => f.PickRandom(customers).Id)
+                    .RuleFor(i => i.HoursOfWork, f => f.Random.Int(0, 24))
                     .Generate(0);
 
                 context.Intervention.AddRange(interventions);

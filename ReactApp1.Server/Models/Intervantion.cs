@@ -2,7 +2,7 @@
 
 namespace ReactApp1.Server.Models
 {
-    public class Intervention //: IEntity
+    public class Intervention 
     {
         public int Id { get; set; }
         public string Description { get; set; }
@@ -10,6 +10,7 @@ namespace ReactApp1.Server.Models
         public int UserId { get; set; }
         public virtual User User { get; set; }
         public int CustomerId { get; set; }
+        public int HoursOfWork { get; set; }
         public virtual Customer Customer { get; set; }
 
         public int AddressId { get; set; }
