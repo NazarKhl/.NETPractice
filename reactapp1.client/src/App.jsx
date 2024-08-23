@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { Modal, Button, Input, Checkbox, notification, DatePicker, Select, Pagination, Spin } from 'antd';
 import moment from 'moment';
@@ -40,6 +40,9 @@ export default function App() {
     const [isFetchProceduresModalOpen, setIsFetchProceduresModalOpen] = useState(false);
     const [visibleButtons, setVisibleButtons] = useState({});
     const [isTopButtonsVisible, setIsTopButtonsVisible] = useState(false);
+    const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+    const showUsersButtonRef = useRef(null);
+    const [showText, setShowText] = useState(true);
 
     useEffect(() => {
         showUsers(currentPage);
@@ -61,11 +64,17 @@ export default function App() {
     };
 
     const toggleButtons = (userId) => {
-        setVisibleButtons(prevState => ({
-            ...prevState,
-            [userId]: !prevState[userId],
-        }));
+        setVisibleButtons(prevState => {
+            const newState = {};
+            Object.keys(prevState).forEach(id => {
+                newState[id] = false;  
+            });
+            newState[userId] = !prevState[userId];  
+            setShowText((prev) => !prev);
+            return newState;
+        });
     };
+
 
     const toggleTopButtonsVisibility = () => {
         setIsTopButtonsVisible(!isTopButtonsVisible);
@@ -82,6 +91,14 @@ export default function App() {
         setProcedureDate('');
         setProcedures([]);
     };
+
+    const applyFiltersAndShowUsers = () => {
+        showUsers(currentPage); 
+        if (showUsersButtonRef.current) {
+            showUsersButtonRef.current.click(); 
+        }
+    };
+
 
     const handleFetchProcedures = async () => {
         if (!customerId || !procedureDate) {
@@ -171,6 +188,14 @@ export default function App() {
         setSelectedUser(null);
         setIsViewModelOpen(false);
     };
+
+    const showFilterModal = () => {
+        setIsFilterModalOpen(true);
+    }
+
+    const hideFilterModal = () => {
+        setIsFilterModalOpen(false);
+    }
 
     const showUserDetails = async (user) => {
         setSelectedUser(user);
@@ -339,47 +364,63 @@ export default function App() {
         ? <Spin size="large" />
         : filteredUsers.length === 0
             ? <p></p>
-            : <table className="table table-striped" aria-labelledby="tableLabel">
-                <thead>
-                    <tr>
-                        <th className="sortButtons" onClick={() => requestSort('id')}>Id</th>
-                        <th className="sortButtons" onClick={() => requestSort('name')}>Name</th>
-                        <th className="sortButtons" onClick={() => requestSort('email')}>Email</th>
-                        <th>Action buttons</th>
-                    </tr>
-                </thead>
-                <tbody >
-                    {filteredUsers.map(user =>
-                        <tr key={user.id}>
-                            <td>{user.id}</td>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>
-                                <Button className="actionButtons" onClick={() => toggleButtons(user.id)}>
-                                    {visibleButtons[user.id] ? 'Hide Actions' : 'Show Actions' }
-                                </Button>
-                                {visibleButtons[user.id] && (
-                                    <div className="actionButtons">
-                                        <Button className="viewButton" onClick={() => showUserDetails(user)}>User Details</Button>
-                                        <Button className="updateButton" onClick={() => showUpdateModal(user)}>Update</Button>
-                                        <Button className="showAbsencesButton" onClick={() => showUserAbsences(user)}>Show Absences</Button>
-                                        <Button className="addAbsenceButton" onClick={() => showAbsenceModal(user)}>Add Absence</Button>
-                                        <Button type="primary" className="deleteButton" onClick={() => handleDelete(user.id)} danger>Delete</Button>
-                                    </div>
-                                )}
-                            </td>
+            : <div className="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Actions</th>
                         </tr>
-                    )}
-                </tbody>
-
-            </table>;
+                    </thead>
+                    <tbody>
+                        {users.map((user) => (
+                            <tr key={user.id}>
+                                {!visibleButtons[user.id] ? (
+                                    <>
+                                        <td>{user.id}</td>
+                                        <td>{user.name}</td>
+                                        <td>{user.email}</td>
+                                    </>
+                                ) : (
+                                    <td colSpan="3" style={{ padding: 0 }}>
+                                        <div className="actionButtons">
+                                            <Button className="viewButton" onClick={() => showUserDetails(user)}>User Details</Button>
+                                            <Button className="updateButton" onClick={() => showUpdateModal(user)}>Update</Button>
+                                            <Button className="showAbsencesButton" onClick={() => showUserAbsences(user)}>Show Absences</Button>
+                                            <Button className="addAbsenceButton" onClick={() => showAbsenceModal(user)}>Add Absence</Button>
+                                            <Button type="primary" className="deleteButton" onClick={() => handleDelete(user.id)} danger>Delete</Button>
+                                        </div>
+                                    </td>
+                                )}
+                                <td>
+                                    <Button className="actionButtons" onClick={() => toggleButtons(user.id)}>
+                                        {visibleButtons[user.id] ? 'Hide Actions' : 'Show Actions'}
+                                    </Button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
     return (
         <div>
             <h1 id="tableLabel">User Data</h1>
 
-            <div className="filterInputs">
-
+            <Modal
+                title="Filter Users"
+                visible={isFilterModalOpen}
+                onOk={hideFilterModal}
+                onCancel={hideFilterModal}
+                footer={[
+                    <Button key="reset" onClick={clearFields}>Reset</Button>,
+                    <Button type='primary' onClick={applyFiltersAndShowUsers} className="applyFilters">
+                        Apply Filters
+                    </Button>
+                ]}
+            >
                 <Input
                     placeholder="Filter by ID"
                     value={idFilter}
@@ -397,9 +438,18 @@ export default function App() {
                     value={emailFilter}
                     onChange={handleEmailFilterChange}
                     className="filterFields"
-                /><br/>
-            </div>
-            <Button onClick={() => showUsers(currentPage)} className="showUsers">Show users</Button>
+                />
+            </Modal>
+            <Button onClick={showFilterModal} className="filterButton">Filter Users</Button>
+
+            <Button
+                ref={showUsersButtonRef}
+                onClick={() => showUsers(currentPage)}
+                className="showUsers"
+            >
+                Show users
+            </Button>
+
             <Button className="topButtonsAction" onClick={toggleTopButtonsVisibility}>
                 {isTopButtonsVisible ? 'Hide Actions' : 'Show Actions'}
             </Button><br/>
@@ -426,6 +476,7 @@ export default function App() {
                 className="paginationPanel"
             />
             <Modal
+                className = "modal-open"
                 title="Create User"
                 visible={isCreateModalOpen}
                 onOk={handleCreateUser}
@@ -565,18 +616,9 @@ export default function App() {
                     <Button key="close" onClick={hideModals}>Close</Button>,
                 ]}
             >
-                <p><strong>ID:</strong> {selectedUser?.id}</p>
                 <p><strong>Name:</strong> {selectedUser?.name}</p>
                 <p><strong>Email:</strong> {selectedUser?.email}</p>
                 <p><strong>Active:</strong> {selectedUser?.isActive ? 'Yes' : 'No'}</p>
-                <p><strong>Absences:</strong></p>
-                <ul>
-                    {selectedUser?.absences?.map((absence, index) => (
-                        <li key={index}>
-                            {absenceTypeLabels[absence.type]} from {moment(absence.dateFrom).format('YYYY-MM-DD')} to {moment(absence.dateTo).format('YYYY-MM-DD')}: {absence.description}
-                        </li>
-                    ))}
-                </ul>
                 <p><strong>Interventions:</strong></p>
                 <ul>
                     {interventionData.map((intervention, index) => (
@@ -628,6 +670,6 @@ export default function App() {
                     </ol>
                 )}
             </Modal>
-        </div>
+            </div>
     );
 }

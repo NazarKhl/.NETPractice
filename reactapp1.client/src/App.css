@@ -10,13 +10,16 @@ th, td {
     padding-right: 1rem;
 }
 
-.updateButton{
+.updateButton {
+    margin-top: -5px;
     margin-right: 10px;
     font-family: cursive;
     font-weight: bold;
 }
 
-.deleteButton{
+.deleteButton {
+
+    margin-top: -5px;
     font-family: cursive;
     font-weight: bold;
 }
@@ -30,11 +33,11 @@ th, td {
 }
 
 .showUsers {
-    width: 390px;
+    width: 800px;
     margin-top: 0px;
+    margin-left: 40px;
     padding: 10px;
     font-weight: bold;
-    margin-left: 40px;
     font-family: cursive;
     transition: 0.5s;
 }
@@ -70,13 +73,15 @@ th, td {
     margin-bottom: 10px;
 }
 
-.addAbsenceButton{
+.addAbsenceButton {
+    margin-top: -5px;
     margin-right: 10px;
     font-family: cursive;
     font-weight: bold;
 }
 
 .showAbsencesButton {
+    margin-top: -5px;
     margin-right: 10px;
     font-family: cursive;
     font-weight: bold;
@@ -116,7 +121,7 @@ th, td {
 }
 
 .paginationPanel{
-    margin-left: 170px;
+    margin-left: 400px;
     margin-top: 50px;
 }
 
@@ -156,7 +161,9 @@ th, td {
     width: 100%;
 }
 
-.viewButton{
+.viewButton {
+    margin-top: -5px;
+    margin-left: 0px;
     margin-right: 10px;
     font-weight: bold;
     font-family: cursive;
@@ -183,15 +190,17 @@ th, td {
     margin-top: 10px;
 }
 .actionButtons {
+    margin-left: 0px;
     margin-top: 10px;
     font-weight: bold;
     font-family: cursive;
+    gap: 10px;
 }
 
 .topButtonsAction {
-    width: 390px;
-    margin-left: 25px;
+    width: 800px;
     margin-top: 10px;
+    margin-left: 40px;
     margin-bottom: 10px;
     font-weight: bold;
     font-family: cursive;
@@ -290,28 +299,6 @@ th, td {
 }
 
 
-@media (max-width: 768px) {
-    .topButtonsAction {
-        width: 100%;
-        margin-left: 0;
-    }
-
-    .paginationPanel {
-        margin-left: 0;
-        text-align: center;
-    }
-
-    .filterFields {
-        width: 100%;
-        margin-left: 0;
-    }
-
-    .table {
-        margin-left: 0;
-    }
-}
-
-
 ::-webkit-scrollbar {
     width: 12px;
 }
@@ -325,6 +312,45 @@ th, td {
     border-radius: 6px;
 }
 
-    ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
+::-webkit-scrollbar-thumb:hover {
+   background: #555;
+}
+
+.blur-background{
+    filter: blur(5px);
+}
+
+
+
+.filterButton {
+    width: 800px;
+    margin-bottom: 10px;
+    margin-left: 40px;
+    padding: 10px;
+    font-weight: bold;
+    font-family: cursive;
+    transition: 0.5s;
+}
+
+.table-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    padding: 0px 180px 0px 180px
+}
+
+.table {
+    width: 100%;
+    max-width: 1200px; 
+}
+
+.actionButtonsContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.topButtonsAction {
+    margin-bottom: 16px; 
+}
