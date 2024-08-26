@@ -2,7 +2,7 @@ using ReactApp1.Server.Models.Abstractions;
 
 namespace ReactApp1.Server.Models
 {
-    public class User //: IEntity 
+    public class User
     {
         public int Id { get; set; }
         public string Name { get; set; }

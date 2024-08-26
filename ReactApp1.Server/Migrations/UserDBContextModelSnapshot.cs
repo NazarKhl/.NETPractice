@@ -50,7 +50,7 @@ namespace ReactApp1.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Absences");
+                    b.ToTable("Absences", (string)null);
                 });
 
             modelBuilder.Entity("ReactApp1.Server.Models.Address", b =>
@@ -88,7 +88,7 @@ namespace ReactApp1.Server.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Address");
+                    b.ToTable("Address", (string)null);
                 });
 
             modelBuilder.Entity("ReactApp1.Server.Models.Customer", b =>
@@ -120,7 +120,7 @@ namespace ReactApp1.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("ReactApp1.Server.Models.Intervention", b =>
@@ -159,7 +159,7 @@ namespace ReactApp1.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Intervention");
+                    b.ToTable("Intervention", (string)null);
                 });
 
             modelBuilder.Entity("ReactApp1.Server.Models.MonthlyInterventionModel", b =>
@@ -244,7 +244,7 @@ namespace ReactApp1.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("ReactApp1.Server.Models.Absence", b =>

@@ -2,7 +2,7 @@
 
 namespace ReactApp1.Server.Interface
 {
-    public interface IRepository<T> : IReadRepository<T> where T : class //, IEntity
+    public interface IRepository<T> : IReadRepository<T> where T : class
     {
         void Add(T entity);
         void Update(T entity);
