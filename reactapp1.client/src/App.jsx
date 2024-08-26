@@ -43,6 +43,12 @@ export default function App() {
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
     const showUsersButtonRef = useRef(null);
     const [showText, setShowText] = useState(true);
+    const [isShowTotalHoursModalOpen, setIsShowTotalHoursModalOpen] = useState(false);
+    const [isOutputModalOpen, setIsOutputModalOpen] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState(null);
+    const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [outputData, setOutputData] = useState('');
 
     useEffect(() => {
         showUsers(currentPage);
@@ -212,19 +218,53 @@ export default function App() {
         setIsViewModelOpen(true);
     }
 
-    const showTotalHouresOfWork = async () => {
-        
+    const showTotalHoursModal = () => {
+        setIsShowTotalHoursModalOpen(true);
+    };
+
+    const hideTotalHoursModal = () => {
+        setIsShowTotalHoursModalOpen(false);
+    };
+
+    const handleShowTotalHours = async () => {
         try {
-            const response = await fetch(`/api/HoursIntervention?userId=1&customerId=9&date=2023-10`);
+            let query = '/api/HoursIntervention?';
+
+            if (selectedUserId) {
+                query += `userId=${selectedUserId}&`;
+            }
+            if (selectedCustomerId) {
+                query += `customerId=${selectedCustomerId}&`;
+            }
+            if (selectedDate) {
+                query += `date=${selectedDate.format('YYYY-MM')}&`;
+            }
+
+            query = query.slice(0, -1);
+
+            const response = await fetch(query);
             if (!response.ok) {
                 throw new Error('Failed to fetch intervention data');
             }
             const data = await response.json();
-            console.log(data);
+
+            const formattedData = data.map(item => (
+                `User ID: ${item.userId}\nCustomer ID: ${item.customerId}\nTotal Hours of Work: ${item.totalHoursOfWork}\n\n`
+            )).join('');
+
+            setOutputData(formattedData);
+
+            hideTotalHoursModal();
+            setIsOutputModalOpen(true);
         } catch (error) {
             notification.error({ message: 'Error fetching intervention data', description: error.message });
         }
-    }
+    };
+
+    const hideOutputModal = () => {
+        setIsOutputModalOpen(false);
+    };
+
 
 
     const handleCreateUser = async () => {
@@ -473,7 +513,11 @@ export default function App() {
                     <Button className="downloadJSON" onClick={downloadJSON}>Download .json</Button>
                     <Button onClick={showUserActivity} className="userActivityCharrt">User Activity</Button>
                     <Button onClick={clearFields} className="clearFields">Clear Fields</Button><br />
-                    <Button onClick={showFetchProceduresModal} className="proceduresButton" type="primary">Fetch Procedures</Button><br/>
+                    <Button onClick={showTotalHoursModal} className="showTotalHoursButton">
+                        Show Total Hours of Work
+                    </Button><br/>
+                    <Button onClick={showFetchProceduresModal} className="proceduresButton" type="primary">Fetch Procedures</Button>
+
                 </>
             )}
             {contents}
@@ -686,7 +730,44 @@ export default function App() {
                     </ol>
                 )}
             </Modal>
-            <button onClick={showTotalHouresOfWork}>Show</button>
-            </div>
+            <Modal
+                title="Show Total Hours of Work"
+                visible={isShowTotalHoursModalOpen}
+                onOk={handleShowTotalHours}
+                onCancel={hideTotalHoursModal}
+            >
+                <Input
+                    placeholder="Enter User ID"
+                    onChange={e => setSelectedUserId(e.target.value)}
+                    value={selectedUserId}
+                    className="inputFie"
+                />
+
+                <Input
+                    placeholder="Enter Customer ID"
+                    onChange={e => setSelectedCustomerId(e.target.value)}
+                    value={selectedCustomerId}
+                    className="inputFie"
+                    style={{ marginTop: 16 }}
+                />
+
+                <DatePicker
+                    placeholder="Select Date"
+                    onChange={date => setSelectedDate(date)}
+                    value={selectedDate}
+                    picker="month"
+                    style={{ marginTop: 16, width: '100%' }}
+                />
+            </Modal>
+
+            <Modal
+                title="Output Data"
+                visible={isOutputModalOpen}
+                onOk={hideOutputModal}
+                onCancel={hideOutputModal}
+            >
+                <pre>{outputData}</pre>
+            </Modal>
+        </div>
     );
 }
