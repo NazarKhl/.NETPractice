@@ -18,7 +18,7 @@ namespace ReactApp1.Server.Interface
         public HoursInterventionModel GetById(int id)
         {
             return _userDBContext.HoursInterventionModels
-                .FromSqlInterpolated($"EXEC dbo.GetTotalHou @UserId = {id}, @CustomerId = NULL, @YearMonth = NULL")
+                .FromSqlInterpolated($"EXEC dbo.GetTotalHoursOfWork @UserId = {id}, @CustomerId = NULL, @YearMonth = NULL")
                 .AsEnumerable()
                 .FirstOrDefault();
         }
@@ -28,7 +28,7 @@ namespace ReactApp1.Server.Interface
             var yearMonthStr = date?.ToString("yyyy-MM") ?? null;
 
             return _userDBContext.HoursInterventionModels
-                .FromSqlInterpolated($"EXEC dbo.GetTotalHou @UserId = {userId}, @CustomerId = {customerId}, @YearMonth = {yearMonthStr}")
+                .FromSqlInterpolated($"EXEC dbo.GetTotalHoursOfWork @UserId = {userId}, @CustomerId = {customerId}, @YearMonth = {yearMonthStr}")
                 .AsQueryable();
         }
     }

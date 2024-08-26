@@ -34,7 +34,7 @@ export default function App() {
     const [isViewModalOpen, setIsViewModelOpen] = useState(false);
     const [procedures, setProcedures] = useState([]);
     const [procedureDate, setProcedureDate] = useState('');
-    const [customerId, setCustomerId] = useState('');
+    const [customerId, setCustomerId] = useState(null);
     const [loadingProcedure, setLoadingProcedure] = useState(false);
     const [isProceduresModalOpen, setIsProceduresModalOpen] = useState(false);
     const [interventionData, setInterventionData] = useState([]);
@@ -607,6 +607,7 @@ export default function App() {
                 onCancel={hideModals}
             >
                 <Select
+                    allowClear
                     value={absenceType}
                     onChange={value => setAbsenceType(value)}
                     placeholder="Select Absence Type"
@@ -714,7 +715,8 @@ export default function App() {
                 onCancel={hideFetchProceduresModal}
             >
                 <Select
-                    placeholder="Wybierz u¿ytkownika"
+                    allowClear
+                    placeholder="Wybierz uzytkownika"
                     value={customerId}
                     onChange={value => setCustomerId(value)}
                     className="procedureId"
@@ -763,6 +765,7 @@ export default function App() {
             >
 
                 <Select
+                    allowClear
                     placeholder="Enter User ID"
                     value={selectedUserId}
                     onChange={value => setSelectedUserId(value)}
@@ -776,6 +779,7 @@ export default function App() {
                 </Select>
 
                 <Select
+                    allowClear
                     placeholder="Enter Customer ID"
                     value={selectedCustomerId}
                     onChange={e => setSelectedCustomerId(e)}

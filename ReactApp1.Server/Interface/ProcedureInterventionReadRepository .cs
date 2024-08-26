@@ -17,7 +17,7 @@ namespace ReactApp1.Server.Interface
         public ProcedureInterventionModel GetById(int id)
         {
             return _userDBContext.ProcedureInterventions
-                .FromSqlInterpolated($"EXEC dbo.GetInterventionsForCustomer @CustomerId = {id}, @Date = {DateTime.Now:yyyy-MM-dd}")
+                .FromSqlInterpolated($"EXEC dbo.GetInterventionsForCustomer @CustomerId = {id}, @YearMonth = {DateTime.Now:yyyy-MM-dd}")
                 .AsEnumerable()
                 .FirstOrDefault();
         }
@@ -25,7 +25,7 @@ namespace ReactApp1.Server.Interface
         public IQueryable<ProcedureInterventionModel> GetAll(int customerId, DateTime date)
         {
             return _userDBContext.ProcedureInterventions
-                .FromSqlInterpolated($"EXEC dbo.GetInterventionsForCustomer @CustomerId = {customerId}, @Date = {date:yyyy-MM-dd}")
+                .FromSqlInterpolated($"EXEC dbo.GetInterventionsForCustomer @CustomerId = {customerId}, @YearMonth = {date:yyyy-MM-dd}")
                 .AsQueryable();
         }
     }
