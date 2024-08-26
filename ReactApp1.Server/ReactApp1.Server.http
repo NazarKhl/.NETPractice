@@ -6,4 +6,7 @@ Accept: application/json
 GET {{ReactApp1.Server_HostAddress}}/absence/
 Accept: application/json
 
+GET {{ReactApp1.Server_HostAddress}}/customer/
+Accept: application/json
+
 ###

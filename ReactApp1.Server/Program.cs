@@ -25,6 +25,7 @@ namespace ReactApp1.Server
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAbsenceService, AbsenceService>();
+            builder.Services.AddScoped<ICustomerService, CustomerService>();
 
             builder.Services.AddControllers();
 

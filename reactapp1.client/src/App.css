@@ -184,8 +184,8 @@ th, td {
 }
 
 .procedureDate {
-    margin-left: 10px;
-    width: 350px;
+    margin-left: 0px;
+    width: 470px;
     margin-top: 10px;
 }
 .actionButtons {
@@ -362,4 +362,17 @@ th, td {
     margin-bottom: 10px;
     font-family: cursive;
     transition: 0.5s;
+}
+
+.inputFie{
+    width: 470px;
+}
+
+.procedureId {
+    margin: 10px 0px 10px 0px;
+    width: 470px;
+}
+
+.dataPick {
+    width: 470px;
 }

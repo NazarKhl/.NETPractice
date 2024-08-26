@@ -3,7 +3,7 @@ using System.Net;
 
 namespace ReactApp1.Server.Models
 {
-    public class Customer //: IEntity
+    public class Customer 
     {
         public int Id { get; set; }
         public string Name { get; set; }

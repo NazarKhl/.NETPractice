@@ -10,6 +10,7 @@ const { Option } = Select;
 
 export default function App() {
     const [users, setUsers] = useState([]);
+    const [customers, setCustomers] = useState([]);
     const [userFinder, setUserFinder] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -52,6 +53,7 @@ export default function App() {
 
     useEffect(() => {
         showUsers(currentPage);
+        fetchCustomers();
     }, [currentPage, pageSize, sortConfig, setIsAbsenceModalOpen]);
 
     const showUsers = async (page = 1) => {
@@ -62,6 +64,19 @@ export default function App() {
             setUsers(data.users);
             setTotalUsers(data.totalCount);
             setCurrentPage(page);
+        } catch (error) {
+            notification.error({ description: error.message });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchCustomers = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('/api/customer');
+            const data = await response.json();
+            setCustomers(data);
         } catch (error) {
             notification.error({ description: error.message });
         } finally {
@@ -255,6 +270,9 @@ export default function App() {
             setOutputData(formattedData);
 
             hideTotalHoursModal();
+            setSelectedUserId(null);
+            setSelectedCustomerId(null);
+            setSelectedDate(null);
             setIsOutputModalOpen(true);
         } catch (error) {
             notification.error({ message: 'Error fetching intervention data', description: error.message });
@@ -695,16 +713,23 @@ export default function App() {
                 onOk={handleFetchProcedures}
                 onCancel={hideFetchProceduresModal}
             >
-                <Input
-                    placeholder="Customer ID"
+                <Select
+                    placeholder="Wybierz u¿ytkownika"
                     value={customerId}
-                    onChange={e => setCustomerId(e.target.value)}
+                    onChange={value => setCustomerId(value)}
                     className="procedureId"
-                />
-                <Input
-                    placeholder="Date (YYYY-MM)"
+                >
+                    {users.map(user => (
+                        <Option key={user.id} value={user.id}>
+                            {user.name}
+                        </Option>
+                    ))}
+                </Select>
+                <DatePicker
+                    placeholder="Select Date"
+                    onChange={e => setProcedureDate(e)}
                     value={procedureDate}
-                    onChange={e => setProcedureDate(e.target.value)}
+                    picker="month"
                     className="procedureDate"
                 />
             </Modal>
@@ -736,32 +761,45 @@ export default function App() {
                 onOk={handleShowTotalHours}
                 onCancel={hideTotalHoursModal}
             >
-                <Input
-                    placeholder="Enter User ID"
-                    onChange={e => setSelectedUserId(e.target.value)}
-                    value={selectedUserId}
-                    className="inputFie"
-                />
 
-                <Input
-                    placeholder="Enter Customer ID"
-                    onChange={e => setSelectedCustomerId(e.target.value)}
-                    value={selectedCustomerId}
+                <Select
+                    placeholder="Enter User ID"
+                    value={selectedUserId}
+                    onChange={value => setSelectedUserId(value)}
                     className="inputFie"
-                    style={{ marginTop: 16 }}
-                />
+                >
+                    {users.map(user => (
+                        <Option key={user.id} value={user.id}>
+                            {user.name}
+                        </Option>
+                    ))}
+                </Select>
+
+                <Select
+                    placeholder="Enter Customer ID"
+                    value={selectedCustomerId}
+                    onChange={e => setSelectedCustomerId(e)}
+                    className="procedureId"
+                >
+                    {customers.map(customer => (
+                        <Option key={customer.id} value={customer.id}>
+                            {customer.name}
+                        </Option>
+                    ))}
+                </Select>
+
 
                 <DatePicker
                     placeholder="Select Date"
                     onChange={date => setSelectedDate(date)}
                     value={selectedDate}
                     picker="month"
-                    style={{ marginTop: 16, width: '100%' }}
+                    className="dataPick"
                 />
             </Modal>
 
             <Modal
-                title="Output Data"
+                title="Total hours of work"
                 visible={isOutputModalOpen}
                 onOk={hideOutputModal}
                 onCancel={hideOutputModal}
